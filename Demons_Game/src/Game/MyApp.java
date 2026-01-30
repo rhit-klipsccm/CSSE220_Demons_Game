@@ -1,28 +1,29 @@
 package Game;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
+import java.awt.*;
 
-
+import javax.swing.*;
 
 public class MyApp {
-	private JFrame frame;  
+	private JFrame frame;
 
 	public MyApp() {
-		frame = new JFrame("Moving Ball");
+		frame = new JFrame("Game");
 		frame.setContentPane(new GameController());
+		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() ->new MyApp().run());
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
 	public void run() {
 		frame.pack();
-		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-
 	}
 
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() -> {
+			MyApp app = new MyApp();
+			app.run();
+		});
+	}
 }

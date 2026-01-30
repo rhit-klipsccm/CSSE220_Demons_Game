@@ -10,5 +10,8 @@ import javax.swing.SwingUtilities;
 
 
 public class GameController extends JPanel{
-
+	
+	public GameController() {
+		
+	}
 }
