@@ -48,7 +48,8 @@ public class Zombie implements Collidable, Sprites {
 			g2.fillOval(x, y, width, height);
 		}
 	}
-
+	
+		
 	
 
 	public int getX() {
