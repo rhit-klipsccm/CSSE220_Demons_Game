@@ -14,7 +14,8 @@ import javax.swing.Timer;
 public class DrawingComponent extends JPanel {
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 700;
-	private Player player = new Player(80, 100, 50, 56);
+	private Player player = new Player(80, 100, 100, 110);
+	private Zombie zombie = new Zombie (920,100,90,100);
 	// DrawingComponent fields (example)
 	private int start_x = 250;
 	private int x = start_x;
@@ -51,6 +52,7 @@ public class DrawingComponent extends JPanel {
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		player.draw(g2);
+		zombie.draw(g2);
 //		setFocusable(true);
 
 	}
