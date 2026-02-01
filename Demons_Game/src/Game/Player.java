@@ -16,7 +16,6 @@ public class Player implements Collidable, Sprites {
 	private int x, y, width, height;
 	private int dx = 1; // direction + speed, 4 pixels per move
 	private int dy = 1; // direction + speed
-	// ✅ sprite cache (shared by ALL balls)
 	private static BufferedImage sprite = null;
 	private static boolean triedLoad = false;
 
@@ -34,8 +33,7 @@ public class Player implements Collidable, Sprites {
 		triedLoad = true;
 		try {
 			// tennis.png must be in the SAME package as Ball.java
-			sprite = ImageIO.read(Player.class.getResource("Game.CharacterSprites.BoyPNGS/Idle (1)"));
-//			System.out.println("hey");
+			sprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/BoyPNGS/Idle (1).png"));
 		} catch (IOException | IllegalArgumentException ex) {
 			sprite = null;
 		}
@@ -56,13 +54,22 @@ public class Player implements Collidable, Sprites {
 		}
 	}
 
-	public void move() {
-		x += dx;
-		y += dy;
+	
+
+	public int getX() {
+		return x;
 	}
 
-	public void flip() {
-		dx = -dx;
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
 	}
 
 	@Override

@@ -12,9 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class DrawingComponent extends JPanel {
-	public static final int WIDTH = 500;
-	public static final int HEIGHT = 200;
-	private Player player = new Player(80, 100, 10, 14);
+	public static final int WIDTH = 1000;
+	public static final int HEIGHT = 700;
+	private Player player = new Player(80, 100, 50, 56);
 	// DrawingComponent fields (example)
 	private int start_x = 250;
 	private int x = start_x;
@@ -39,8 +39,8 @@ public class DrawingComponent extends JPanel {
             }
         });
 		timer = new Timer(50, e -> {
-			player.update(WIDTH, HEIGHT);
-			repaint();
+//			player.update(WIDTH, HEIGHT);
+//			repaint();
 		});
 		timer.start();
 		
@@ -56,22 +56,22 @@ public class DrawingComponent extends JPanel {
 	}
 	
 	public void moveUp() {
-		y+= step;
+		player.setY(player.getY()-step);
 		repaint();
 	}
 	
 	public void moveDown() {
-		y-=step;
+		player.setY(player.getY()+step);
 		repaint();
 	}
 	
 	public void moveLeft() {
-		x -= step;
+		player.setX(player.getX()-step);
 		repaint();
 	}
 
 	public void moveRight() {
-		x += step;
+		player.setX(player.getX()+step);
 		repaint();
 	}
 
