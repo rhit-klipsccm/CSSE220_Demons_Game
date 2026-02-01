@@ -10,13 +10,12 @@ public class MyApp {
 	public MyApp() {
 		frame = new JFrame("Game");
 		frame.setContentPane(new GameController());
-		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
 	public void run() {
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
 

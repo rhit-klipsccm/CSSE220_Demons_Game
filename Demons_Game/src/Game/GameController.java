@@ -10,8 +10,11 @@ import javax.swing.SwingUtilities;
 
 
 public class GameController extends JPanel{
-	
+	private DrawingComponent drawing;
 	public GameController() {
+		setLayout(new BorderLayout());
+		drawing=new DrawingComponent();
+		add(drawing, BorderLayout.CENTER);
 		
 	}
 }
