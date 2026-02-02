@@ -1,4 +1,4 @@
-package Game;、
+package Game;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,7 +8,6 @@ import java.util.Timer;
 import javax.imageio.ImageIO;
 
 
-package Game;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,7 +24,7 @@ public class Block {
 
 
     public boolean isWalkable() {
-        return type != 1; //
+        return type != 0; //
     }// if it is not walkable, like the wall, it cannot be walk into. The floors and exit are walkable.
 
 

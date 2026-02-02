@@ -1,6 +1,7 @@
 package Game;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 public class Map {
 
@@ -9,12 +10,7 @@ public class Map {
     private Block[][] blocks;
 
     public Map() {
-        rows = 10;
-        cols = 15;
 
-        blocks = new Block[rows][cols];
-
-        // 0 is the wall, 1 is the exit, 2 is the floor; this is the same with the name in the map. To better remember this..
         int[][] mapData = {
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
             {0,2,2,2,2,2,0,2,2,2,2,2,2,1,0},
@@ -28,6 +24,11 @@ public class Map {
             {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
         };
 
+        rows = mapData.length;
+        cols = mapData[0].length;
+
+        blocks = new Block[rows][cols];
+
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 blocks[r][c] = new Block(mapData[r][c]);
@@ -38,27 +39,55 @@ public class Map {
     public void draw(Graphics2D g2) {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
-                int x = c * Block.SIZE;
-                int y = r * Block.SIZE;
-                blocks[r][c].draw(g2, x, y);
+                blocks[r][c].draw(g2, c * Block.SIZE, r * Block.SIZE);
             }
         }
     }
 
-    
-    
-    
-    
-    // Idk how future code is written, so I just write some kind of code maybe would help
-    
+ 
+
+    public boolean canMove(Rectangle bounds) {
+
+        int left   = bounds.x;
+        int right  = bounds.x + bounds.width - 1;
+        int top    = bounds.y;
+        int bottom = bounds.y + bounds.height - 1;
+
+        return isWalkable(top / Block.SIZE, left / Block.SIZE) && isWalkable(top / Block.SIZE, right / Block.SIZE) && isWalkable(bottom / Block.SIZE, left / Block.SIZE)&& isWalkable(bottom / Block.SIZE, right / Block.SIZE);
+    }
+
     public boolean isWalkable(int row, int col) {
         if (row < 0 || col < 0 || row >= rows || col >= cols) {
-            return false;
+            return false; // outside map = wall
         }
         return blocks[row][col].isWalkable();
     }
 
-    public boolean isExit(int row, int col) {
+   
+
+    public int getPixelWidth() {
+        return cols * Block.SIZE;
+    }
+
+    public int getPixelHeight() {
+        return rows * Block.SIZE;
+    }
+    
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public boolean isExit(Rectangle bounds) {
+        int row = bounds.y / Block.SIZE;
+        int col = bounds.x / Block.SIZE;
+        return isExit(row, col);
+    }
+
+    private boolean isExit(int row, int col) {
         return blocks[row][col].getType() == 1;
     }
 }
