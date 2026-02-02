@@ -3,6 +3,7 @@ package Game;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -100,4 +101,18 @@ public class Player implements Collidable, Sprites {
 			dy = -dy;
 		}
 	}
+
+	public Rectangle getBounds() {
+	    return new Rectangle(this.getX(), this.getY(), width, height);
+	}
+	
+	
+    public void move(int dx, int dy, Map map) {
+        Rectangle next = new Rectangle(x + dx, y + dy, width, height);
+        if (map.canMove(next)) {
+            x += dx;
+            y += dy;
+        }
+    }
+
 }
