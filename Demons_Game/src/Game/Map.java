@@ -27,20 +27,24 @@ public class Map {
 //            {0,2,0,0,0,0,2,0,0,0,0,0,0,2,0},
 //            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
 //        };
-    	//TODO: Add / catch exceptions for filenotfound exception
-    	int[][] mapData = mapLoader("/Game/level.txt");
+    	
+    	try {
+    		int[][] mapData = mapLoader("/Game/level.txt");
 
-        rows = mapData.length;
-        cols = mapData[0].length;
+    		rows = mapData.length;
+    		cols = mapData[0].length;
 
-        blocks = new Block[rows][cols];
+    		blocks = new Block[rows][cols];
 
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                blocks[r][c] = new Block(mapData[r][c]);
-            }
-        }
-    }
+    		for (int r = 0; r < rows; r++) {
+    			for (int c = 0; c < cols; c++) {
+    				blocks[r][c] = new Block(mapData[r][c]);
+    			}
+    		}
+    	} catch (Exception e) {
+    		System.out.println("Failed to load /Game/level.txt");
+    	}
+    	}
 
     public void draw(Graphics2D g2) {
         for (int r = 0; r < rows; r++) {
