@@ -147,20 +147,11 @@ public class Zombie implements Sprites {
 	public Rectangle getBounds() {
 	    return new Rectangle(this.getX(), this.getY(), width, height);
 	}
+
+	@Override
+	public void setAction(String actionName) {
+		// TODO Auto-generated method stub
+		
+	}
 	
-	 // collision checking in the corners (hopefully)
- 	public boolean canMove(Rectangle bounds, Map map) {
- 		int left = bounds.x;
- 		int right  = bounds.x + bounds.width - 1;
- 	    int top    = bounds.y;
- 	    int bottom = bounds.y + bounds.height - 1;
- 	    
- 	    int leftCol   = left / Block.SIZE;
- 	    int rightCol  = right / Block.SIZE;
- 	    int topRow    = top / Block.SIZE;
- 	    int bottomRow = bottom / Block.SIZE;
- 	    
- 	    return (map.isWalkable(topRow, leftCol) && map.isWalkable(topRow, rightCol) && map.isWalkable(bottomRow, leftCol) && map.isWalkable(bottomRow, rightCol));
- 	    
- 	}
 }

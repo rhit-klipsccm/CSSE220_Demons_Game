@@ -115,4 +115,10 @@ public class Player implements Collidable, Sprites {
         }
     }
 
+	@Override
+	public void setAction(String actionName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

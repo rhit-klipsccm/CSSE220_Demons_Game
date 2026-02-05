@@ -2,6 +2,10 @@ package Game;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Map {
 
@@ -11,18 +15,20 @@ public class Map {
 
     public Map() {
 
-        int[][] mapData = {
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-            {0,2,2,2,2,2,0,2,2,2,2,2,2,1,0},
-            {0,2,0,0,0,2,0,2,0,0,0,0,2,2,0},
-            {0,2,2,2,0,2,2,2,2,2,2,0,2,2,0},
-            {0,0,0,2,0,0,0,0,0,0,2,0,0,2,0},
-            {0,2,2,2,2,2,2,2,2,0,2,2,2,2,0},
-            {0,2,0,0,0,0,0,0,2,0,0,0,0,2,0},
-            {0,2,2,2,2,2,2,0,2,2,2,2,2,2,0},
-            {0,2,0,0,0,0,2,0,0,0,0,0,0,2,0},
-            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
-        };
+//        int[][] mapData = {
+//            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+//            {0,2,2,2,2,2,0,2,2,2,2,2,2,1,0},
+//            {0,2,0,0,0,2,0,2,0,0,0,0,2,2,0},
+//            {0,2,2,2,0,2,2,2,2,2,2,0,2,2,0},
+//            {0,0,0,2,0,0,0,0,0,0,2,0,0,2,0},
+//            {0,2,2,2,2,2,2,2,2,0,2,2,2,2,0},
+//            {0,2,0,0,0,0,0,0,2,0,0,0,0,2,0},
+//            {0,2,2,2,2,2,2,0,2,2,2,2,2,2,0},
+//            {0,2,0,0,0,0,2,0,0,0,0,0,0,2,0},
+//            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}
+//        };
+    	//TODO: Add / catch exceptions for filenotfound exception
+    	int[][] mapData = mapLoader("/Game/level.txt");
 
         rows = mapData.length;
         cols = mapData[0].length;
@@ -63,7 +69,32 @@ public class Map {
         return blocks[row][col].isWalkable();
     }
 
-   
+    private int[][] mapLoader(String filename) {
+    	ArrayList<int[]> mapArray = new ArrayList<int[]>();
+    	File mapFile = new File(filename);
+    	Scanner scanner = new Scanner(
+			        getClass().getResourceAsStream(filename)
+			    );
+		
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			int[] row = new int[line.length()];
+			
+			for (int col = 0; col < line.length(); col++) {
+				row[col] = Character.getNumericValue(line.charAt(col));
+			}
+			mapArray.add(row);
+		}
+		scanner.close();
+		
+		int[][] map = new int[mapArray.size()][];
+		for (int i = 0; i < mapArray.size(); i++) {
+			map[i] = mapArray.get(i);
+		}
+		
+		return map;
+    	
+    }
 
     public int getPixelWidth() {
         return cols * Block.SIZE;
