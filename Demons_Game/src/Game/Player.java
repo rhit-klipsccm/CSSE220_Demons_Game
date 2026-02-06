@@ -19,39 +19,13 @@ public class Player implements Collidable, Sprites {
 	private int dy = 1; // direction + speed
 	private static BufferedImage sprite = null;
 	private static boolean triedLoad = false;
-	private int health;
 
 	public Player(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
 		this.width=width;
 		this.height=height;
-		this.health=3;
 		loadSpriteOnce();
-	}
-	
-	public void subtractHealth() {
-		this.health--;
-	}
-	
-	public void subtractHealth(int health) {
-		this.health-=health;
-	}
-	
-	public void addHealth() {
-		this.health++;
-	}
-	
-	public void addHealth(int health) {
-		this.health+=health;
-	}
-
-	public int getHealth() {
-		return health;
-	}
-
-	public void setHealth(int health) {
-		this.health = health;
 	}
 
 	private static void loadSpriteOnce() {
