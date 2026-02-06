@@ -28,14 +28,14 @@ public class DrawingComponent extends JPanel {
 	private Timer timer;
 	private Map map = new Map();
 	private ArrayList<Zombie> zombies = new ArrayList<>();
-
+	private Player player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
 	// more "dynamically" assign the player's and zombie's size now, changeable with block fields now, should scale better?
-		private Player player = new Player(
-			    Block.SIZE * 1,
-			    Block.SIZE * 1,
-			    Block.SIZE,
-			    Block.SIZE
-			);
+//		private Player player = new Player(
+//			    map.getPlayerStartX(),
+//			    map.getPlayerStartY(),
+//			    Block.SIZE,
+//			    Block.SIZE
+//			);
 
 //		private Zombie zombie = new Zombie(
 //			    Block.SIZE * (map.getCols() - 2),
@@ -56,7 +56,12 @@ public class DrawingComponent extends JPanel {
 			    map.getPixelHeight()
 			));
 		
-		player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
+		player = new Player(
+			    map.getPlayerStartX(),
+			    map.getPlayerStartY(),
+			    Block.SIZE,
+			    Block.SIZE
+			);
 		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
 		    zombies.add(new Zombie(
 		        map.getZombieSpawnX(i),
