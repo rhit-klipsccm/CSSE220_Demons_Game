@@ -50,8 +50,8 @@ public class Map {
     		            type = 2;
     		        }
     		        else if (type == 4) {
-    		        	playerStartX = r;
-    		        	playerStartY = c;
+    		        	playerStartX = c;
+    		        	playerStartY = r;
     		        	type = 2;
     		        }
 
