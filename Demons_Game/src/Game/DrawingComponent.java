@@ -16,8 +16,6 @@ import javax.swing.Timer;
 public class DrawingComponent extends JPanel {
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 700;
-	
-	
 
 	// DrawingComponent fields (example)
 	private int start_x = 250;
@@ -29,7 +27,9 @@ public class DrawingComponent extends JPanel {
 	private Map map = new Map();
 	private ArrayList<Zombie> zombies = new ArrayList<>();
 	private Player player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
-	// more "dynamically" assign the player's and zombie's size now, changeable with block fields now, should scale better?
+	private GameController controller = new GameController();
+	// more "dynamically" assign the player's and zombie's size now, changeable with
+	// block fields now, should scale better?
 //		private Player player = new Player(
 //			    map.getPlayerStartX(),
 //			    map.getPlayerStartY(),
@@ -44,56 +44,54 @@ public class DrawingComponent extends JPanel {
 //			    Block.SIZE
 //			);
 //	
-	
-	
-	
+
 	public DrawingComponent() {
 		setBackground(Color.CYAN);
 		setOpaque(true);
 		// possibly temporary, trying to get the map to fit in frame
-		setPreferredSize(new Dimension(
-			    map.getPixelWidth(),
-			    map.getPixelHeight()
-			));
-		
-		player = new Player(
-			    map.getPlayerStartX(),
-			    map.getPlayerStartY(),
-			    Block.SIZE,
-			    Block.SIZE
-			);
+		setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+
+		player = new Player(map.getPlayerStartX(), map.getPlayerStartY(), Block.SIZE, Block.SIZE);
 		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
-		    zombies.add(new Zombie(
-		        map.getZombieSpawnX(i),
-		        map.getZombieSpawnY(i),
-		        Block.SIZE,
-		        Block.SIZE));
+			zombies.add(new Zombie(map.getZombieSpawnX(i), map.getZombieSpawnY(i), Block.SIZE, Block.SIZE));
 		}
-		
-		
+
 		setFocusable(true);
-		
+
 		addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_W) player.move(0, -10, map);
-                if (e.getKeyCode() == KeyEvent.VK_S) player.move(0, 10, map);
-                if (e.getKeyCode() == KeyEvent.VK_A) player.move(-10, 0, map);
-                if (e.getKeyCode() == KeyEvent.VK_D) player.move(10, 0, map);
-                repaint();
-            }
-        });
-		
-		
-		
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_W)
+					player.move(0, -10, map);
+				if (e.getKeyCode() == KeyEvent.VK_S)
+					player.move(0, 10, map);
+				if (e.getKeyCode() == KeyEvent.VK_A)
+					player.move(-10, 0, map);
+				if (e.getKeyCode() == KeyEvent.VK_D)
+					player.move(10, 0, map);
+				repaint();
+			}
+		});
+
 		timer = new Timer(50, e -> {
-		for (Zombie zombie : zombies) {
-			zombie.update(map);
-		}
-		repaint();
+			for (Zombie zombie : zombies) {
+				zombie.update(map);
+			}
+			for (Zombie zombie : zombies) {
+			    if (player.getBounds().intersects(zombie.getBounds())) {
+			        zombies.remove(zombie);
+			        player.subtractHealth();
+			        break; // remove only one enemy per frame
+			    }
+			}
+			if(player.getHealth()==0) {
+				timer.stop();
+				gameOverScreen();
+			}
+			repaint();
 		});
 		timer.start();
-			
+
 	}
 
 	@Override
@@ -103,16 +101,13 @@ public class DrawingComponent extends JPanel {
 		map.draw(g2);
 		player.draw(g2);
 		for (Zombie zombie : zombies) {
-		    zombie.draw(g2);
+			zombie.draw(g2);
 		}
 //		setFocusable(true);
 
 	}
-	
-	
-	
-	
-	//TODO refactor player movement code!
+
+	// TODO refactor player movement code!
 //	public void moveUp() {
 //		player.setY(player.getY()-step);
 //		repaint();
@@ -137,8 +132,8 @@ public class DrawingComponent extends JPanel {
 //		x = start_x;
 //		repaint();
 //	}
-	
-	//TODO: refactor zombie random movement!
+
+	// TODO: refactor zombie random movement!
 //	public void zombieMoveUp() {
 //		zombie.setY(zombie.getY()-step);
 //		repaint();
@@ -183,14 +178,5 @@ public class DrawingComponent extends JPanel {
 //		
 //
 //	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
 
+}

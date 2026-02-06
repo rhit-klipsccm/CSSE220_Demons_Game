@@ -9,7 +9,6 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-import Game.DrawingComponent.Direction;
 
 public class Zombie implements Sprites {
 	 private int x, y, width, height;
