@@ -12,6 +12,8 @@ public class Map {
     private int rows;
     private int cols;
     private Block[][] blocks;
+    private ArrayList<Integer> zombieSpawnRow = new ArrayList<>();
+    private ArrayList<Integer> zombieSpawnCol = new ArrayList<>();
 
     public Map() {
 
@@ -37,13 +39,25 @@ public class Map {
     		blocks = new Block[rows][cols];
 
     		for (int r = 0; r < rows; r++) {
-    			for (int c = 0; c < cols; c++) {
-    				blocks[r][c] = new Block(mapData[r][c]);
-    			}
+    		    for (int c = 0; c < cols; c++) {
+    		        int type = mapData[r][c];
+
+    		        if (type == 3) {
+    		            zombieSpawnRow.add(r);
+    		            zombieSpawnCol.add(c);
+    		            type = 2;
+    		        }
+
+    		        blocks[r][c] = new Block(type);
+    		    }
     		}
     	} catch (Exception e) {
     		System.out.println("Failed to load /Game/level.txt");
     	}
+    	
+    	
+    		
+    	
     	}
 
     public void draw(Graphics2D g2) {
@@ -72,10 +86,10 @@ public class Map {
         }
         return blocks[row][col].isWalkable();
     }
-
+    
     private int[][] mapLoader(String filename) {
     	ArrayList<int[]> mapArray = new ArrayList<int[]>();
-    	File mapFile = new File(filename);
+//    	File mapFile = new File(filename);
     	Scanner scanner = new Scanner(
 			        getClass().getResourceAsStream(filename)
 			    );
@@ -115,6 +129,20 @@ public class Map {
     public int getCols() {
         return cols;
     }
+    
+    public int getZombieSpawnCount() {
+        return zombieSpawnRow.size();
+    }
+
+    public int getZombieSpawnX(int index) {
+        return zombieSpawnCol.get(index) * Block.SIZE;
+    }
+
+    public int getZombieSpawnY(int index) {
+        return zombieSpawnRow.get(index) * Block.SIZE;
+    }
+    
+  
 
     public boolean isExit(Rectangle bounds) {
         int row = bounds.y / Block.SIZE;

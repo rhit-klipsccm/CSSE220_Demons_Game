@@ -44,6 +44,7 @@ public class Block {
                 g2.setColor(Color.LIGHT_GRAY);
                 g2.fillRect(x, y, SIZE, SIZE);
             }
+           
         }
     }
 

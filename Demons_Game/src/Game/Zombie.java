@@ -13,7 +13,7 @@ import Game.DrawingComponent.Direction;
 
 public class Zombie implements Sprites {
 	 private int x, y, width, height;
-	    private int step = 10;
+	    private int step = 20;
 	    private Direction direction = Direction.UP;
 	    private int stepsRemaining = 0;
 	    private static BufferedImage sprite;

@@ -21,11 +21,13 @@ public class DrawingComponent extends JPanel {
 
 	// DrawingComponent fields (example)
 	private int start_x = 250;
+	private int start_y = 250;
 	private int x = start_x;
 	private int y = 20;
 	private int step = 10;
 	private Timer timer;
 	private Map map = new Map();
+	private ArrayList<Zombie> zombies = new ArrayList<>();
 
 	// more "dynamically" assign the player's and zombie's size now, changeable with block fields now, should scale better?
 		private Player player = new Player(
@@ -35,13 +37,13 @@ public class DrawingComponent extends JPanel {
 			    Block.SIZE
 			);
 
-		private Zombie zombie = new Zombie(
-			    Block.SIZE * (map.getCols() - 2),
-			    Block.SIZE * 1,
-			    Block.SIZE,
-			    Block.SIZE
-			);
-	
+//		private Zombie zombie = new Zombie(
+//			    Block.SIZE * (map.getCols() - 2),
+//			    Block.SIZE * 1,
+//			    Block.SIZE,
+//			    Block.SIZE
+//			);
+//	
 	
 	
 	
@@ -53,7 +55,17 @@ public class DrawingComponent extends JPanel {
 			    map.getPixelWidth(),
 			    map.getPixelHeight()
 			));
-
+		
+		player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
+		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
+		    zombies.add(new Zombie(
+		        map.getZombieSpawnX(i),
+		        map.getZombieSpawnY(i),
+		        Block.SIZE,
+		        Block.SIZE));
+		}
+		
+		
 		setFocusable(true);
 		
 		addKeyListener(new KeyAdapter() {
@@ -70,7 +82,9 @@ public class DrawingComponent extends JPanel {
 		
 		
 		timer = new Timer(50, e -> {
-		zombie.update(map);
+		for (Zombie zombie : zombies) {
+			zombie.update(map);
+		}
 		repaint();
 		});
 		timer.start();
@@ -83,10 +97,14 @@ public class DrawingComponent extends JPanel {
 		Graphics2D g2 = (Graphics2D) g;
 		map.draw(g2);
 		player.draw(g2);
-		zombie.draw(g2);
+		for (Zombie zombie : zombies) {
+		    zombie.draw(g2);
+		}
 //		setFocusable(true);
 
 	}
+	
+	
 	
 	
 	//TODO refactor player movement code!
