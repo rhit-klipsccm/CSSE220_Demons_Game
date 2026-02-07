@@ -9,6 +9,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,8 +20,6 @@ import javax.swing.Timer;
 public class DrawingComponent extends JPanel {
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 700;
-	
-	
 
 	// DrawingComponent fields (example)
 	private int start_x = 250;
@@ -30,11 +30,14 @@ public class DrawingComponent extends JPanel {
 	private Timer timer;
 	private Map map = new Map();
 	private ArrayList<Zombie> zombies = new ArrayList<>();
-	private Player player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
+	private Player player;
 	private UI ui;
 	private int playerLives = 3;
 	private boolean gameOver = false;
-	// more "dynamically" assign the player's and zombie's size now, changeable with block fields now, should scale better?
+	
+	private Rectangle restartButton;
+	// more "dynamically" assign the player's and zombie's size now, changeable with
+	// block fields now, should scale better?
 //		private Player player = new Player(
 //			    map.getPlayerStartX(),
 //			    map.getPlayerStartY(),
@@ -49,17 +52,14 @@ public class DrawingComponent extends JPanel {
 //			    Block.SIZE
 //			);
 //	
-	
-	
-	
+
 	public DrawingComponent() {
 		setBackground(Color.CYAN);
-	    setOpaque(true);
-	    setPreferredSize(new Dimension(
-	        map.getPixelWidth(),
-	        map.getPixelHeight()
-	    ));
-	    
+		setOpaque(true);
+		setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+
+		initializeGame();
+
 	    player = new Player(
 	        map.getPlayerStartX(),
 	        map.getPlayerStartY(),
@@ -77,100 +77,157 @@ public class DrawingComponent extends JPanel {
 	    
 	    // Initialize UI
 	    ui = new UI(playerLives, 0, 0);
-	    
-	    setFocusable(true);
-	    
-	    addKeyListener(new KeyAdapter() {
-	        @Override
-	        public void keyPressed(KeyEvent e) {
-	            if (!gameOver) {  // Only allow movement if game is not over
-	                if (e.getKeyCode() == KeyEvent.VK_W) player.move(0, -10, map);
-	                if (e.getKeyCode() == KeyEvent.VK_S) player.move(0, 10, map);
-	                if (e.getKeyCode() == KeyEvent.VK_A) player.move(-10, 0, map);
-	                if (e.getKeyCode() == KeyEvent.VK_D) player.move(10, 0, map);
-	                repaint();
-	            }
-	        }
-	    });
-	    
-	    timer = new Timer(50, e -> {
-	        if (!gameOver) {  // Only update if game is not over
-	            for (Zombie zombie : zombies) {
-	                zombie.update(map);
-	            }
-	            checkCollisions();  // Check for collisions
-	            repaint();
-	        }
-	    });
-	    timer.start();
-			
+
+		setFocusable(true);
+
+		addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (!gameOver) { // Only allow movement if game is not over
+					if (e.getKeyCode() == KeyEvent.VK_W)
+						player.move(0, -10, map);
+					if (e.getKeyCode() == KeyEvent.VK_S)
+						player.move(0, 10, map);
+					if (e.getKeyCode() == KeyEvent.VK_A)
+						player.move(-10, 0, map);
+					if (e.getKeyCode() == KeyEvent.VK_D)
+						player.move(10, 0, map);
+					repaint();
+				}
+			}
+		});
+
+		addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (gameOver && restartButton != null) {
+					if (restartButton.contains(e.getPoint())) {
+						restartGame();
+					}
+				}
+			}
+		});
+
+		timer = new Timer(50, e -> {
+			if (!gameOver) { // Only update if game is not over
+				for (Zombie zombie : zombies) {
+					zombie.update(map);
+				}
+				checkCollisions(); // Check for collisions
+				repaint();
+			}
+		});
+		timer.start();
+
 	}
-	
+
+	/**
+	 * Reset all movements to starting point
+	 */
+	private void initializeGame() {
+		player = new Player(map.getPlayerStartX(), map.getPlayerStartY(), Block.SIZE, Block.SIZE);
+
+		zombies.clear();
+		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
+			zombies.add(new Zombie(map.getZombieSpawnX(i), map.getZombieSpawnY(i), Block.SIZE, Block.SIZE));
+		}
+
+		playerLives = 3;
+		ui = new UI(playerLives, 0, 0);
+		gameOver = false;
+	}
+
 	/**
 	 * Check for collisions between players and all zombies on the map
 	 */
 	private void checkCollisions() {
-	    Rectangle playerBounds = player.getBounds();
-	    
-	    for (Zombie zombie : zombies) {
-	        Rectangle zombieBounds = zombie.getBounds();
-	        
-	        if (playerBounds.intersects(zombieBounds)) {
-	            handlePlayerHit();
-	            break;  // Only process one collision per frame
-	        }
-	    }
+		Rectangle playerBounds = player.getBounds();
+
+		for (Zombie zombie : zombies) {
+			Rectangle zombieBounds = zombie.getBounds();
+
+			if (playerBounds.intersects(zombieBounds)) {
+				handlePlayerHit();
+				break; // Only process one collision per frame
+			}
+		}
 	}
-	
+
 	/**
 	 * subtracts health from player whenever called
 	 */
 	private void handlePlayerHit() {
-	    playerLives--;
-	    ui.setLives(playerLives);
-	    
-	    if (playerLives <= 0) {
-	        gameOver = true;
-	        timer.stop();  // Stop the game
-	    } else {
-	        // Respawn player at starting position
-	        player.setX(map.getPlayerStartX());
-	        player.setY(map.getPlayerStartY());
-	    }
+		playerLives--;
+		ui.setLives(playerLives);
+
+		if (playerLives <= 0) {
+			gameOver = true;
+			timer.stop(); // Stop the game
+		} else {
+			// Respawn player at starting position
+			player.setX(map.getPlayerStartX());
+			player.setY(map.getPlayerStartY());
+		}
 	}
-	
+
+	/**
+	 * Game restart code
+	 */
+	private void restartGame() {
+		initializeGame();
+		timer.start();
+		requestFocusInWindow(); // Return focus to the panel for keyboard input
+		repaint();
+	}
+
 	/**
 	 * paint component method that is responsible for drawing what the user sees
+	 * draws game ui, game over screen and restart button
+	 * @param g
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-	    Graphics2D g2 = (Graphics2D) g;
-	    map.draw(g2);
-	    player.draw(g2);
-	    for (Zombie zombie : zombies) {
-	        zombie.draw(g2);
-	    }
-	    ui.draw(g2);  // Draw the UI
-	    
-	    if (gameOver) {
-	        // Draw game over message
-	        g2.setColor(new Color(0, 0, 0, 150));  // Semi-transparent black
-	        g2.fillRect(0, 0, getWidth(), getHeight());
-	        
-	        g2.setColor(Color.RED);
-	        g2.setFont(new Font("Arial", Font.BOLD, 48));
-	        String gameOverText = "GAME OVER";
-	        int textWidth = g2.getFontMetrics().stringWidth(gameOverText);
-	        g2.drawString(gameOverText, (getWidth() - textWidth) / 2, getHeight() / 2);
-	    }
+		Graphics2D g2 = (Graphics2D) g;
+		map.draw(g2);
+		player.draw(g2);
+		for (Zombie zombie : zombies) {
+			zombie.draw(g2);
+		}
+		ui.draw(g2);
+
+		if (gameOver) {
+			g2.setColor(new Color(0, 0, 0, 150));
+			g2.fillRect(0, 0, getWidth(), getHeight());
+
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial", Font.BOLD, 48));
+			String gameOverText = "GAME OVER";
+			int textWidth = g2.getFontMetrics().stringWidth(gameOverText);
+			g2.drawString(gameOverText, (getWidth() - textWidth) / 2, getHeight() / 2);
+
+			int buttonWidth = 200;
+			int buttonHeight = 60;
+			int buttonX = (getWidth() - buttonWidth) / 2;
+			int buttonY = getHeight() / 2 + 20;
+			restartButton = new Rectangle(buttonX, buttonY, buttonWidth, buttonHeight);
+
+			g2.setColor(new Color(100, 200, 100));
+			g2.fillRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, 20, 20);
+
+			g2.setColor(Color.WHITE);
+			g2.setStroke(new BasicStroke(3));
+			g2.drawRoundRect(buttonX, buttonY, buttonWidth, buttonHeight, 20, 20);
+
+			g2.setFont(new Font("Arial", Font.BOLD, 24));
+			String buttonText = "RESTART";
+			int btnTextWidth = g2.getFontMetrics().stringWidth(buttonText);
+			g2.drawString(buttonText, buttonX + (buttonWidth - btnTextWidth) / 2, buttonY + buttonHeight / 2 + 8);
+		}
 
 	}
-	
-	
-	
-	
-	//TODO refactor player movement code!
+
+	// TODO refactor player movement code!
 //	public void moveUp() {
 //		player.setY(player.getY()-step);
 //		repaint();
@@ -195,8 +252,8 @@ public class DrawingComponent extends JPanel {
 //		x = start_x;
 //		repaint();
 //	}
-	
-	//TODO: refactor zombie random movement!
+
+	// TODO: refactor zombie random movement!
 //	public void zombieMoveUp() {
 //		zombie.setY(zombie.getY()-step);
 //		repaint();
@@ -241,14 +298,5 @@ public class DrawingComponent extends JPanel {
 //		
 //
 //	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-}
 
+}
