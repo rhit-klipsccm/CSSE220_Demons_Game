@@ -3,8 +3,10 @@ package Game;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class DrawingComponent extends JPanel {
 	private Map map = new Map();
 	private ArrayList<Zombie> zombies = new ArrayList<>();
 	private Player player = new Player(start_x, start_y, Block.SIZE, Block.SIZE);
+	private UI ui;
+	private int playerLives = 3;
+	private boolean gameOver = false;
 	// more "dynamically" assign the player's and zombie's size now, changeable with block fields now, should scale better?
 //		private Player player = new Player(
 //			    map.getPlayerStartX(),
@@ -49,63 +54,116 @@ public class DrawingComponent extends JPanel {
 	
 	public DrawingComponent() {
 		setBackground(Color.CYAN);
-		setOpaque(true);
-		// possibly temporary, trying to get the map to fit in frame
-		setPreferredSize(new Dimension(
-			    map.getPixelWidth(),
-			    map.getPixelHeight()
-			));
-		
-		player = new Player(
-			    map.getPlayerStartX(),
-			    map.getPlayerStartY(),
-			    Block.SIZE,
-			    Block.SIZE
-			);
-		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
-		    zombies.add(new Zombie(
-		        map.getZombieSpawnX(i),
-		        map.getZombieSpawnY(i),
-		        Block.SIZE,
-		        Block.SIZE));
-		}
-		
-		
-		setFocusable(true);
-		
-		addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_W) player.move(0, -10, map);
-                if (e.getKeyCode() == KeyEvent.VK_S) player.move(0, 10, map);
-                if (e.getKeyCode() == KeyEvent.VK_A) player.move(-10, 0, map);
-                if (e.getKeyCode() == KeyEvent.VK_D) player.move(10, 0, map);
-                repaint();
-            }
-        });
-		
-		
-		
-		timer = new Timer(50, e -> {
-		for (Zombie zombie : zombies) {
-			zombie.update(map);
-		}
-		repaint();
-		});
-		timer.start();
+	    setOpaque(true);
+	    setPreferredSize(new Dimension(
+	        map.getPixelWidth(),
+	        map.getPixelHeight()
+	    ));
+	    
+	    player = new Player(
+	        map.getPlayerStartX(),
+	        map.getPlayerStartY(),
+	        Block.SIZE,
+	        Block.SIZE
+	    );
+	    
+	    for (int i = 0; i < map.getZombieSpawnCount(); i++) {
+	        zombies.add(new Zombie(
+	            map.getZombieSpawnX(i),
+	            map.getZombieSpawnY(i),
+	            Block.SIZE,
+	            Block.SIZE));
+	    }
+	    
+	    // Initialize UI
+	    ui = new UI(playerLives, 0, 0);
+	    
+	    setFocusable(true);
+	    
+	    addKeyListener(new KeyAdapter() {
+	        @Override
+	        public void keyPressed(KeyEvent e) {
+	            if (!gameOver) {  // Only allow movement if game is not over
+	                if (e.getKeyCode() == KeyEvent.VK_W) player.move(0, -10, map);
+	                if (e.getKeyCode() == KeyEvent.VK_S) player.move(0, 10, map);
+	                if (e.getKeyCode() == KeyEvent.VK_A) player.move(-10, 0, map);
+	                if (e.getKeyCode() == KeyEvent.VK_D) player.move(10, 0, map);
+	                repaint();
+	            }
+	        }
+	    });
+	    
+	    timer = new Timer(50, e -> {
+	        if (!gameOver) {  // Only update if game is not over
+	            for (Zombie zombie : zombies) {
+	                zombie.update(map);
+	            }
+	            checkCollisions();  // Check for collisions
+	            repaint();
+	        }
+	    });
+	    timer.start();
 			
 	}
-
+	
+	/**
+	 * Check for collisions between players and all zombies on the map
+	 */
+	private void checkCollisions() {
+	    Rectangle playerBounds = player.getBounds();
+	    
+	    for (Zombie zombie : zombies) {
+	        Rectangle zombieBounds = zombie.getBounds();
+	        
+	        if (playerBounds.intersects(zombieBounds)) {
+	            handlePlayerHit();
+	            break;  // Only process one collision per frame
+	        }
+	    }
+	}
+	
+	/**
+	 * subtracts health from player whenever called
+	 */
+	private void handlePlayerHit() {
+	    playerLives--;
+	    ui.setLives(playerLives);
+	    
+	    if (playerLives <= 0) {
+	        gameOver = true;
+	        timer.stop();  // Stop the game
+	    } else {
+	        // Respawn player at starting position
+	        player.setX(map.getPlayerStartX());
+	        player.setY(map.getPlayerStartY());
+	    }
+	}
+	
+	/**
+	 * paint component method that is responsible for drawing what the user sees
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		Graphics2D g2 = (Graphics2D) g;
-		map.draw(g2);
-		player.draw(g2);
-		for (Zombie zombie : zombies) {
-		    zombie.draw(g2);
-		}
-//		setFocusable(true);
+	    Graphics2D g2 = (Graphics2D) g;
+	    map.draw(g2);
+	    player.draw(g2);
+	    for (Zombie zombie : zombies) {
+	        zombie.draw(g2);
+	    }
+	    ui.draw(g2);  // Draw the UI
+	    
+	    if (gameOver) {
+	        // Draw game over message
+	        g2.setColor(new Color(0, 0, 0, 150));  // Semi-transparent black
+	        g2.fillRect(0, 0, getWidth(), getHeight());
+	        
+	        g2.setColor(Color.RED);
+	        g2.setFont(new Font("Arial", Font.BOLD, 48));
+	        String gameOverText = "GAME OVER";
+	        int textWidth = g2.getFontMetrics().stringWidth(gameOverText);
+	        g2.drawString(gameOverText, (getWidth() - textWidth) / 2, getHeight() / 2);
+	    }
 
 	}
 	
