@@ -14,6 +14,8 @@ public class Map {
     private Block[][] blocks;
     private ArrayList<Integer> zombieSpawnRow = new ArrayList<>();
     private ArrayList<Integer> zombieSpawnCol = new ArrayList<>();
+    private ArrayList<Integer> itemSpawnRow = new ArrayList<>();
+    private ArrayList<Integer> itemSpawnCol = new ArrayList<>();
     private int playerStartX;
     private int playerStartY;
 
@@ -21,7 +23,7 @@ public class Map {
 
 //        int[][] mapData = {
 //            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-//            {0,4,2,2,2,2,0,2,2,2,2,2,2,1,0},
+//            {0,4,2,2,2,2,0,2,2,4,2,2,2,1,0},
 //            {0,2,0,0,0,2,0,2,0,0,0,0,2,2,0},
 //            {0,2,2,2,0,2,2,2,2,2,2,0,2,2,0},
 //            {0,0,0,2,0,0,0,0,0,0,2,0,0,2,0},
@@ -49,9 +51,16 @@ public class Map {
     		            zombieSpawnCol.add(c);
     		            type = 2;
     		        }
+    		        
     		        else if (type == 4) {
     		        	playerStartX = c;
     		        	playerStartY = r;
+    		        	type = 2;
+    		        }
+    		        
+    		        else if (type == 5) {
+    		        	itemSpawnRow.add(r);
+    		        	itemSpawnCol.add(c);
     		        	type = 2;
     		        }
 
@@ -149,6 +158,18 @@ public class Map {
         return zombieSpawnRow.get(index) * Block.SIZE;
     }
     
+    public int getItemSpawnCount() {
+    	return itemSpawnCol.size();
+    }
+    
+    public int getItemSpawnX(int index) {
+    	return itemSpawnCol.get(index) * Block.SIZE;
+    }
+    
+    public int getItemSpawnY(int index) {
+    	return itemSpawnRow.get(index) * Block.SIZE;
+    }
+    
     public int getPlayerStartX() {
     	return playerStartX*Block.SIZE;
     }
@@ -156,6 +177,8 @@ public class Map {
     public int getPlayerStartY() {
     	return playerStartY*Block.SIZE;
     }
+    
+    
   
 
     public boolean isExit(Rectangle bounds) {

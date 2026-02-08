@@ -30,10 +30,13 @@ public class DrawingComponent extends JPanel {
 	private Timer timer;
 	private Map map = new Map();
 	private ArrayList<Zombie> zombies = new ArrayList<>();
+	private ArrayList<Item> items = new ArrayList<>();
 	private Player player;
 	private UI ui;
 	private int playerLives = 3;
 	private boolean gameOver = false;
+	private int score = 0;
+	private int totalStars = 0;
 	
 	private Rectangle restartButton;
 	// more "dynamically" assign the player's and zombie's size now, changeable with
@@ -75,24 +78,44 @@ public class DrawingComponent extends JPanel {
 	            Block.SIZE));
 	    }
 	    
-	    // Initialize UI
-	    ui = new UI(playerLives, 0, 0);
+//	    for (int i = 0; i < map.getItemSpawnCount(); i++) {
+//	    	items.add(new Item(
+//	    		map.getItemSpawnX(i),
+//	    		map.getItemSpawnY(i),
+//	    		Block.SIZE,
+//	    		Block.SIZE));
+//	    }
+	    
+	    ui = new UI(playerLives, score, totalStars);
 
 		setFocusable(true);
 
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (!gameOver) { // Only allow movement if game is not over
-					if (e.getKeyCode() == KeyEvent.VK_W)
-						player.move(0, -10, map);
-					if (e.getKeyCode() == KeyEvent.VK_S)
-						player.move(0, 10, map);
-					if (e.getKeyCode() == KeyEvent.VK_A)
-						player.move(-10, 0, map);
-					if (e.getKeyCode() == KeyEvent.VK_D)
-						player.move(10, 0, map);
-					repaint();
+				if (!gameOver) {
+					boolean moved = false;
+					if (e.getKeyCode() == KeyEvent.VK_W) {
+			            player.move(0, -10, map);
+			            moved = true;
+			        }
+			        if (e.getKeyCode() == KeyEvent.VK_S) {
+			            player.move(0, 10, map);
+			            moved = true;
+			        }
+			        if (e.getKeyCode() == KeyEvent.VK_A) {
+			            player.move(-10, 0, map);
+			            moved = true;
+			        }
+			        if (e.getKeyCode() == KeyEvent.VK_D) {
+			            player.move(10, 0, map);
+			            moved = true;
+			        }
+
+			        if (moved) {
+			            checkCollisions();
+			            repaint();
+			        }
 				}
 			}
 		});
@@ -113,7 +136,8 @@ public class DrawingComponent extends JPanel {
 				for (Zombie zombie : zombies) {
 					zombie.update(map);
 				}
-				checkCollisions(); // Check for collisions
+				
+//				checkCollisions(); // Check for collisions
 				repaint();
 			}
 		});
@@ -131,27 +155,47 @@ public class DrawingComponent extends JPanel {
 		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
 			zombies.add(new Zombie(map.getZombieSpawnX(i), map.getZombieSpawnY(i), Block.SIZE, Block.SIZE));
 		}
+		
+		items.clear();
+		for (int i = 0; i < map.getItemSpawnCount(); i++) {
+			items.add(new Item(map.getItemSpawnX(i), map.getItemSpawnY(i), Block.SIZE, Block.SIZE));
+		}
 
 		playerLives = 3;
-		ui = new UI(playerLives, 0, 0);
+		totalStars = items.size();
+		score = 0;
 		gameOver = false;
 	}
 
 	/**
-	 * Check for collisions between players and all zombies on the map
+	 * Check for collisions between players and all zombies on the map, AND items
 	 */
 	private void checkCollisions() {
 		Rectangle playerBounds = player.getBounds();
 
 		for (Zombie zombie : zombies) {
 			Rectangle zombieBounds = zombie.getBounds();
+			
 
 			if (playerBounds.intersects(zombieBounds)) {
 				handlePlayerHit();
 				break; // Only process one collision per frame
 			}
+			
 		}
-	}
+		int centerX = playerBounds.x + playerBounds.width / 2;
+		int centerY = playerBounds.y + playerBounds.height / 2;
+		Rectangle point = new Rectangle(centerX, centerY, 1, 1);
+
+		for (Item item : items) {
+		    if (point.intersects(item.getBounds()) && !item.isCollected()) {
+		        item.collect();
+		        score++;
+		        ui.setScore(score);
+		        break;
+		    }
+		}
+		}
 
 	/**
 	 * subtracts health from player whenever called
@@ -174,6 +218,7 @@ public class DrawingComponent extends JPanel {
 	 * Game restart code
 	 */
 	private void restartGame() {
+		timer.stop();
 		initializeGame();
 		timer.start();
 		requestFocusInWindow(); // Return focus to the panel for keyboard input
@@ -193,6 +238,9 @@ public class DrawingComponent extends JPanel {
 		player.draw(g2);
 		for (Zombie zombie : zombies) {
 			zombie.draw(g2);
+		}
+		for (Item item : items) {
+			item.draw(g2);
 		}
 		ui.draw(g2);
 

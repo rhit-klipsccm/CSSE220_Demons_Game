@@ -8,13 +8,13 @@ import java.awt.Graphics2D;
 public class UI {
     private int lives;
     private int score;
-    private int totalGems;
+    private int totalStars;
 
 
-    public UI(int lives, int score, int totalGems) {
+    public UI(int lives, int score, int totalStars) {
         this.lives = lives;
         this.score = score;
-        this.totalGems = totalGems;
+        this.totalStars = totalStars;
     }
 
     
@@ -26,8 +26,8 @@ public class UI {
         this.score = score;
     }
 
-    public void setTotalGems(int totalGems) {
-        this.totalGems = totalGems;
+    public void setTotalStars(int totalStars) {
+        this.totalStars = totalStars;
     }
 
 
@@ -38,7 +38,7 @@ public class UI {
         g2.setFont(new Font("Arial", Font.BOLD, 20));
 
         g2.drawString("Lives: " + lives, 20, 30);
-        g2.drawString("Score: " + score + " / " + totalGems, 20, 60);
+        g2.drawString("Score: " + score + " / " + totalStars, 20, 60);
 
         g2.drawString("Exit", 900, 30);
 
