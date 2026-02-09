@@ -1,29 +1,50 @@
 package Game;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class UI {
+
     private int lives;
     private int score;
     private int totalStars;
+    private boolean gameOver = false;
+    private boolean win = false;
 
+    private BufferedImage heart;
 
     public UI(int lives, int score, int totalStars) {
         this.lives = lives;
         this.score = score;
         this.totalStars = totalStars;
+
+        loadImages();
     }
 
     
+//    DRAWING the Heart(if need?)
+//    private void loadImages() {
+//        try {
+//            heart = ImageIO.read(getClass().getResource("/Game/CharacterSprites/UI/heart.png"));
+//        } catch (Exception e) {
+//            heart = null;
+//        }
+//    }
+
+    
+    
+    
+    
+    // THE SETTERS
     public void setLives(int lives) {
         this.lives = lives;
+        if (lives <= 0) gameOver = true;
     }
 
     public void setScore(int score) {
         this.score = score;
+        if (score >= totalStars) win = true;
     }
 
     public void setTotalStars(int totalStars) {
@@ -31,18 +52,78 @@ public class UI {
     }
 
 
+    
+    
+    
+    // DRAW!!
 
-    //draw the UI
     public void draw(Graphics2D g2) {
+
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 20));
 
-        g2.drawString("Lives: " + lives, 20, 30);
-        g2.drawString("Score: " + score + " / " + totalStars, 20, 60);
+        
+        //Heart
+        if (heart != null) {
+            for (int i = 0; i < lives; i++) {
+                g2.drawImage(heart, 20 + i * 40, 10, 30, 30, null);
+            }
+        } else {
+            g2.drawString("Lives: " + lives, 20, 30);
+        }
 
-        g2.drawString("Exit", 900, 30);
+        
+        
+        
+        //Score
+        g2.drawString(
+            "Score: " + score + " / " + totalStars,
+            20,
+            60
+        );
 
+        
+        
+        //Exit(if need?)
+//        g2.drawString("Exit", 900, 30);
+
+        
+        
+        
+        //Bottom texts
         g2.setFont(new Font("Arial", Font.PLAIN, 16));
-        g2.drawString("WASD to move, SPACE to catapult zombies", 300, 680);
+        g2.drawString(
+            "WASD to move, SPACE to catapult zombies",
+            300,
+            680
+        );
+
+        
+        
+        
+        //Game Over
+//        if (gameOver) {
+//            g2.setFont(new Font("Arial", Font.BOLD, 60));
+//            g2.setColor(Color.RED);
+//            g2.drawString(
+//                "GAME OVER",
+//                350,
+//                350
+//            );
+//        }
+
+        
+        
+        
+        //Win
+//        if (win) {
+//            g2.setFont(new Font("Arial", Font.BOLD, 60));
+//            g2.setColor(Color.GREEN);
+//            g2.drawString(
+//                "YOU WIN!",
+//                380,
+//                350
+//            );
+//        }
     }
 }

@@ -63,20 +63,25 @@ public class DrawingComponent extends JPanel {
 
 		initializeGame();
 
-	    player = new Player(
-	        map.getPlayerStartX(),
-	        map.getPlayerStartY(),
-	        Block.SIZE,
-	        Block.SIZE
-	    );
-	    
-	    for (int i = 0; i < map.getZombieSpawnCount(); i++) {
-	        zombies.add(new Zombie(
-	            map.getZombieSpawnX(i),
-	            map.getZombieSpawnY(i),
-	            Block.SIZE,
-	            Block.SIZE));
-	    }
+		
+		
+		
+		
+//		They are all in initializeGame() so I commented it out
+//	    player = new Player(
+//	        map.getPlayerStartX(),
+//	        map.getPlayerStartY(),
+//	        Block.SIZE,
+//	        Block.SIZE
+//	    );
+//	    
+//	    for (int i = 0; i < map.getZombieSpawnCount(); i++) {
+//	        zombies.add(new Zombie(
+//	            map.getZombieSpawnX(i),
+//	            map.getZombieSpawnY(i),
+//	            Block.SIZE,
+//	            Block.SIZE));
+//	    }
 	    
 //	    for (int i = 0; i < map.getItemSpawnCount(); i++) {
 //	    	items.add(new Item(
@@ -86,7 +91,7 @@ public class DrawingComponent extends JPanel {
 //	    		Block.SIZE));
 //	    }
 	    
-	    ui = new UI(playerLives, score, totalStars);
+//	    ui = new UI(playerLives, score, totalStars);
 
 		setFocusable(true);
 
@@ -165,6 +170,11 @@ public class DrawingComponent extends JPanel {
 		totalStars = items.size();
 		score = 0;
 		gameOver = false;
+		
+//		ADDDDDDDDDDDDDDDDDDDDDDDD for UI
+		ui.setLives(playerLives);
+		ui.setScore(score);
+		ui.setTotalStars(totalStars);
 	}
 
 	/**
