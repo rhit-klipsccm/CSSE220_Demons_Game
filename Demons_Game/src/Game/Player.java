@@ -20,6 +20,8 @@ public class Player implements Collidable, Sprites {
 	private static BufferedImage sprite = null;
 	private static boolean triedLoad = false;
 	private int health;
+	private long lastHitTime = 0;
+	private static final long HIT_COOLDOWN = 1000;
 
 	public Player(int x, int y, int width, int height) {
 		this.x = x;
@@ -123,9 +125,13 @@ public class Player implements Collidable, Sprites {
         return health;
     }
     
+    public boolean canTakeDamage() {
+        return System.currentTimeMillis() - lastHitTime >= HIT_COOLDOWN;
+    }
     
     public void loseLife() {
         health--;
+        lastHitTime = System.currentTimeMillis();
     }
     
     

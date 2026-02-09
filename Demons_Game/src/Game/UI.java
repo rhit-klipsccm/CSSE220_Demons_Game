@@ -22,15 +22,16 @@ public class UI {
         loadImages();
     }
 
+
     
 //    DRAWING the Heart(if need?)
-//    private void loadImages() {
-//        try {
-//            heart = ImageIO.read(getClass().getResource("/Game/CharacterSprites/UI/heart.png"));
-//        } catch (Exception e) {
-//            heart = null;
-//        }
-//    }
+    private void loadImages() {
+        try {
+            heart = ImageIO.read(getClass().getResource("/Game/CharacterSprites/UI/heart.png"));
+        } catch (Exception e) {
+            heart = null;
+        }
+    }
 
 
     // THE SETTERS
@@ -50,7 +51,8 @@ public class UI {
 
 
     public void updateLives(int lives) {
-        if (lives <= 0) {
+        this.lives = lives;
+    	if (lives <= 0) {
             gameOver = true;
         }
     }
@@ -114,18 +116,18 @@ public class UI {
         
         
         
-        //Game Over
-        if (gameOver) {
-            g2.setFont(new Font("Arial", Font.BOLD, 60));
-            g2.setColor(Color.RED);
-            g2.drawString("GAME OVER", 350, 350);
-        }
-  
-        //Win
-        if (win) {
-            g2.setFont(new Font("Arial", Font.BOLD, 60));
-            g2.setColor(Color.GREEN);
-            g2.drawString("YOU WIN!", 380, 350);
-        }
+//        //Game Over
+//        if (gameOver) {
+//            g2.setFont(new Font("Arial", Font.BOLD, 60));
+//            g2.setColor(Color.RED);
+//            g2.drawString("GAME OVER", 350, 350);
+//        }
+//  
+//        //Win
+//        if (win) {
+//            g2.setFont(new Font("Arial", Font.BOLD, 60));
+//            g2.setColor(Color.GREEN);
+//            g2.drawString("YOU WIN!", 380, 350);
+//        }
     }
 }

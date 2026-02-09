@@ -18,6 +18,7 @@ public class Map {
     private ArrayList<Integer> itemSpawnCol = new ArrayList<>();
     private int playerStartX;
     private int playerStartY;
+    
 
     public Map() {
 
@@ -191,7 +192,7 @@ public class Map {
     
     
     
-    if (map.isExit(player.getBounds())) {
-        ui.setScore(ui.getTotalStars());
-    }
+//    if (map.isExit(player.getBounds())) {
+//        ui.setScore(ui.getTotalStars());
+//    }
 }

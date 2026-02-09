@@ -144,9 +144,14 @@ public class DrawingComponent extends JPanel {
 		        zombie.update(map);
 		    }
 		    
-		    if (ui.isGameOver() || ui.isWin()) {
+		    checkCollisions();
+		    
+		    if (ui.isGameOver()) {
 		        gameOver = true;
 		        timer.stop();
+		    }
+		    else if (ui.isWin()) {
+		    	timer.stop();
 		    }
 		    repaint();
 			}
@@ -176,7 +181,7 @@ public class DrawingComponent extends JPanel {
 		score = 0;
 		gameOver = false;
 		
-		ui = new UI(totalStars);
+		ui = new UI(playerLives, score, totalStars);
 		ui.updateLives(playerLives);
 		ui.updateScore(score); 
 	}
@@ -192,16 +197,18 @@ public class DrawingComponent extends JPanel {
 			
 
 			if (playerBounds.intersects(zombieBounds)) {
-//				handlePlayerHit();
-//				break; // Only process one collision per frame
-			    player.loseLife();
-			    ui.updateLives(player.getLives());
-			    if (player.getLives() <= 0) {
-			        gameOver = true;
-			        timer.stop();
+			    if (player.canTakeDamage()) {
+			        player.loseLife();
+			        ui.updateLives(player.getLives());
+
+			        if (player.getLives() <= 0) {
+			            gameOver = true;
+			            timer.stop();
+			        }
 			    }
-			    break; 
+			    break;
 			}
+
 			
 		}
 		int centerX = playerBounds.x + playerBounds.width / 2;
@@ -222,7 +229,6 @@ public class DrawingComponent extends JPanel {
 		if (map.isExit(player.getBounds())) {
 //			if reach the total score, then win
 		    ui.updateScore(totalStars);
-		    gameOver = true;
 		    timer.stop();
 		}
 		}
@@ -301,6 +307,13 @@ public class DrawingComponent extends JPanel {
 			String buttonText = "RESTART";
 			int btnTextWidth = g2.getFontMetrics().stringWidth(buttonText);
 			g2.drawString(buttonText, buttonX + (buttonWidth - btnTextWidth) / 2, buttonY + buttonHeight / 2 + 8);
+			} 
+		else if (ui.isWin()) {
+			g2.setColor(Color.RED);
+			g2.setFont(new Font("Arial", Font.BOLD, 48));
+			String gameOverText = "YOU WIN !!!";
+			int textWidth = g2.getFontMetrics().stringWidth(gameOverText);
+			g2.drawString(gameOverText, (getWidth() - textWidth) / 2, getHeight() / 2);
 		}
 
 	}
