@@ -76,11 +76,7 @@ public class UI {
         
         
         //Score
-        g2.drawString(
-            "Score: " + score + " / " + totalStars,
-            20,
-            60
-        );
+        g2.drawString("Score: " + score + " / " + totalStars, 20, 60);
 
         
         
@@ -92,11 +88,7 @@ public class UI {
         
         //Bottom texts
         g2.setFont(new Font("Arial", Font.PLAIN, 16));
-        g2.drawString(
-            "WASD to move, SPACE to catapult zombies",
-            300,
-            680
-        );
+        g2.drawString("WASD to move, SPACE to catapult zombies", 300, 680);
 
         
         
@@ -105,11 +97,7 @@ public class UI {
 //        if (gameOver) {
 //            g2.setFont(new Font("Arial", Font.BOLD, 60));
 //            g2.setColor(Color.RED);
-//            g2.drawString(
-//                "GAME OVER",
-//                350,
-//                350
-//            );
+//            g2.drawString("GAME OVER", 350, 350);
 //        }
 
         
@@ -119,11 +107,7 @@ public class UI {
 //        if (win) {
 //            g2.setFont(new Font("Arial", Font.BOLD, 60));
 //            g2.setColor(Color.GREEN);
-//            g2.drawString(
-//                "YOU WIN!",
-//                380,
-//                350
-//            );
+//            g2.drawString("YOU WIN!", 380, 350);
 //        }
     }
 }
