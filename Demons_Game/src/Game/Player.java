@@ -117,6 +117,19 @@ public class Player implements Collidable, Sprites {
         }
     }
 
+    
+    
+    public int getLives() {
+        return health;
+    }
+    
+    
+    public void loseLife() {
+        health--;
+    }
+    
+    
+    
 	@Override
 	public void setAction(String actionName) {
 		// TODO Auto-generated method stub

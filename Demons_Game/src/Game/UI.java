@@ -32,10 +32,7 @@ public class UI {
 //        }
 //    }
 
-    
-    
-    
-    
+
     // THE SETTERS
     public void setLives(int lives) {
         this.lives = lives;
@@ -52,6 +49,30 @@ public class UI {
     }
 
 
+    public void updateLives(int lives) {
+        if (lives <= 0) {
+            gameOver = true;
+        }
+    }
+    
+    public void updateScore(int score) {
+        this.score = score;
+        if (score >= totalStars) {
+            win = true;
+        }
+    }
+    
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public boolean isWin() {
+        return win;
+    }
+    
+    
+    
+    
     
     
     
@@ -94,20 +115,17 @@ public class UI {
         
         
         //Game Over
-//        if (gameOver) {
-//            g2.setFont(new Font("Arial", Font.BOLD, 60));
-//            g2.setColor(Color.RED);
-//            g2.drawString("GAME OVER", 350, 350);
-//        }
-
-        
-        
-        
+        if (gameOver) {
+            g2.setFont(new Font("Arial", Font.BOLD, 60));
+            g2.setColor(Color.RED);
+            g2.drawString("GAME OVER", 350, 350);
+        }
+  
         //Win
-//        if (win) {
-//            g2.setFont(new Font("Arial", Font.BOLD, 60));
-//            g2.setColor(Color.GREEN);
-//            g2.drawString("YOU WIN!", 380, 350);
-//        }
+        if (win) {
+            g2.setFont(new Font("Arial", Font.BOLD, 60));
+            g2.setColor(Color.GREEN);
+            g2.drawString("YOU WIN!", 380, 350);
+        }
     }
 }

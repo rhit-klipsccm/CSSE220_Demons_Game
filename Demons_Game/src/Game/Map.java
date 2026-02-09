@@ -84,8 +84,6 @@ public class Map {
         }
     }
 
- 
-
     public boolean canMove(Rectangle bounds) {
 
         int left   = bounds.x;
@@ -189,5 +187,11 @@ public class Map {
 
     private boolean isExit(int row, int col) {
         return blocks[row][col].getType() == 1;
+    }
+    
+    
+    
+    if (map.isExit(player.getBounds())) {
+        ui.setScore(ui.getTotalStars());
     }
 }

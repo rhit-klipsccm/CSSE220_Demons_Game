@@ -63,11 +63,6 @@ public class DrawingComponent extends JPanel {
 
 		initializeGame();
 
-		
-		
-		
-		
-//		They are all in initializeGame() so I commented it out
 //	    player = new Player(
 //	        map.getPlayerStartX(),
 //	        map.getPlayerStartY(),
@@ -82,7 +77,7 @@ public class DrawingComponent extends JPanel {
 //	            Block.SIZE,
 //	            Block.SIZE));
 //	    }
-	    
+//	    
 //	    for (int i = 0; i < map.getItemSpawnCount(); i++) {
 //	    	items.add(new Item(
 //	    		map.getItemSpawnX(i),
@@ -90,7 +85,7 @@ public class DrawingComponent extends JPanel {
 //	    		Block.SIZE,
 //	    		Block.SIZE));
 //	    }
-	    
+//	    
 //	    ui = new UI(playerLives, score, totalStars);
 
 		setFocusable(true);
@@ -138,12 +133,22 @@ public class DrawingComponent extends JPanel {
 
 		timer = new Timer(50, e -> {
 			if (!gameOver) { // Only update if game is not over
-				for (Zombie zombie : zombies) {
-					zombie.update(map);
-				}
-				
-//				checkCollisions(); // Check for collisions
-				repaint();
+//				for (Zombie zombie : zombies) {
+//					zombie.update(map);
+//				}
+//				
+////				checkCollisions(); // Check for collisions
+//				repaint();
+			
+		    for (Zombie zombie : zombies) {
+		        zombie.update(map);
+		    }
+		    
+		    if (ui.isGameOver() || ui.isWin()) {
+		        gameOver = true;
+		        timer.stop();
+		    }
+		    repaint();
 			}
 		});
 		timer.start();
@@ -171,10 +176,9 @@ public class DrawingComponent extends JPanel {
 		score = 0;
 		gameOver = false;
 		
-//		ADDDDDDDDDDDDDDDDDDDDDDDD for UI
-		ui.setLives(playerLives);
-		ui.setScore(score);
-		ui.setTotalStars(totalStars);
+		ui = new UI(totalStars);
+		ui.updateLives(playerLives);
+		ui.updateScore(score); 
 	}
 
 	/**
@@ -188,8 +192,15 @@ public class DrawingComponent extends JPanel {
 			
 
 			if (playerBounds.intersects(zombieBounds)) {
-				handlePlayerHit();
-				break; // Only process one collision per frame
+//				handlePlayerHit();
+//				break; // Only process one collision per frame
+			    player.loseLife();
+			    ui.updateLives(player.getLives());
+			    if (player.getLives() <= 0) {
+			        gameOver = true;
+			        timer.stop();
+			    }
+			    break; 
 			}
 			
 		}
@@ -201,9 +212,18 @@ public class DrawingComponent extends JPanel {
 		    if (point.intersects(item.getBounds()) && !item.isCollected()) {
 		        item.collect();
 		        score++;
-		        ui.setScore(score);
+		        ui.updateScore(score);
 		        break;
 		    }
+		}
+		
+		
+		
+		if (map.isExit(player.getBounds())) {
+//			if reach the total score, then win
+		    ui.updateScore(totalStars);
+		    gameOver = true;
+		    timer.stop();
 		}
 		}
 
