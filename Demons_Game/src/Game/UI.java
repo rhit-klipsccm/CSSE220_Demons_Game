@@ -111,7 +111,7 @@ public class UI {
         
         //Bottom texts
         g2.setFont(new Font("Arial", Font.PLAIN, 16));
-        g2.drawString("WASD to move, SPACE to catapult zombies", 300, 680);
+        g2.drawString("WASD to move", 300, 680);
 
         
         
