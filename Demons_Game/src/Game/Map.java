@@ -20,7 +20,7 @@ public class Map {
     private int playerStartY;
     
 
-    public Map() {
+    public Map(String filename) {
 
 //        int[][] mapData = {
 //            {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -36,7 +36,7 @@ public class Map {
 //        };
     	
     	try {
-    		int[][] mapData = mapLoader("/Game/level.txt");
+    		int[][] mapData = mapLoader(filename);
 
     		rows = mapData.length;
     		cols = mapData[0].length;

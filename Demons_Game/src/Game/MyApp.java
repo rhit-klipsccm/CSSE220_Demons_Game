@@ -6,17 +6,63 @@ import javax.swing.*;
 
 public class MyApp {
 	private JFrame frame;
+	private JPanel container;
+	private CardLayout cardLayout;
+	
+	public static String MENU = "Menu";
+	public static String GAME = "Game";
+	public static String GAME_OVER = "Game Over!";
+	
+	private DrawingComponent game;
+	private String currentLevel;
 
 	public MyApp() {
-		frame = new JFrame("Game");
-		frame.setContentPane(new GameController());
+		frame = new JFrame(GAME);
+		
+		cardLayout = new CardLayout();
+		container = new JPanel(cardLayout);
+		
+		MainMenuPanel menu = new MainMenuPanel(this);
+		game = new DrawingComponent(this, null);
+		GameOverPanel gameOver = new GameOverPanel(this);
+		
+		container.add(menu, MENU);
+		container.add(game, GAME);
+		container.add(gameOver, GAME_OVER);
+		
+		frame.setContentPane(container);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	
+	public void showMenu() {
+		cardLayout.show(container, MENU);
+	}
+	
+	public void showGame(String levelFile) {
+	    this.currentLevel = levelFile;   // remember level
+	    game.loadLevel(levelFile);
+	    cardLayout.show(container, GAME);
+	    frame.pack();
+	    frame.setLocationRelativeTo(null);
+	    SwingUtilities.invokeLater(() -> game.requestFocusInWindow());
+	}
+	
+	public void showGameOver() {
+		cardLayout.show(container, GAME_OVER);
+	}
+	public void replayLevel() {
+	    if (currentLevel != null) {
+	        game.loadLevel(currentLevel);
+	        cardLayout.show(container, GAME);
+	        game.requestFocusInWindow();
+	    }
 	}
 
 	public void run() {
 		frame.pack();
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		showMenu();
 	}
 
 	public static void main(String[] args) {

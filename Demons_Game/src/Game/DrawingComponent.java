@@ -28,7 +28,8 @@ public class DrawingComponent extends JPanel {
 	private int y = 20;
 	private int step = 10;
 	private Timer timer;
-	private Map map = new Map();
+	private String currentLevel;
+	private Map map;
 	private ArrayList<Zombie> zombies = new ArrayList<>();
 	private ArrayList<Item> items = new ArrayList<>();
 	private Player player;
@@ -37,6 +38,8 @@ public class DrawingComponent extends JPanel {
 	private boolean gameOver = false;
 	private int score = 0;
 	private int totalStars = 0;
+	private MyApp app;
+	
 	
 	private Rectangle restartButton;
 	// more "dynamically" assign the player's and zombie's size now, changeable with
@@ -56,40 +59,32 @@ public class DrawingComponent extends JPanel {
 //			);
 //	
 
-	public DrawingComponent() {
-		setBackground(Color.CYAN);
-		setOpaque(true);
-		setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+	public DrawingComponent(MyApp app, String levelFileName) {
 
-		initializeGame();
+	    this.app = app;
+	    this.currentLevel = levelFileName;
 
-//	    player = new Player(
-//	        map.getPlayerStartX(),
-//	        map.getPlayerStartY(),
-//	        Block.SIZE,
-//	        Block.SIZE
-//	    );
-//	    
-//	    for (int i = 0; i < map.getZombieSpawnCount(); i++) {
-//	        zombies.add(new Zombie(
-//	            map.getZombieSpawnX(i),
-//	            map.getZombieSpawnY(i),
-//	            Block.SIZE,
-//	            Block.SIZE));
-//	    }
-//	    
-//	    for (int i = 0; i < map.getItemSpawnCount(); i++) {
-//	    	items.add(new Item(
-//	    		map.getItemSpawnX(i),
-//	    		map.getItemSpawnY(i),
-//	    		Block.SIZE,
-//	    		Block.SIZE));
-//	    }
-//	    
-//	    ui = new UI(playerLives, score, totalStars);
+	    setBackground(Color.CYAN);
+	    setOpaque(true);
+	    setFocusable(true);
 
-		setFocusable(true);
+	    if (levelFileName != null) {
+	        map = new Map(levelFileName);
+	        setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+	    }
 
+//	    initializeGame();
+	    setupControls();
+	    startTimer();
+	}
+
+		
+		
+
+		
+	
+	
+	private void setupControls() {
 		addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -119,7 +114,7 @@ public class DrawingComponent extends JPanel {
 				}
 			}
 		});
-
+		
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -130,36 +125,44 @@ public class DrawingComponent extends JPanel {
 				}
 			}
 		});
-
-		timer = new Timer(50, e -> {
-			if (!gameOver) { // Only update if game is not over
-//				for (Zombie zombie : zombies) {
-//					zombie.update(map);
-//				}
-//				
-////				checkCollisions(); // Check for collisions
-//				repaint();
-			
-		    for (Zombie zombie : zombies) {
-		        zombie.update(map);
-		    }
-		    
-		    checkCollisions();
-		    
-		    if (ui.isGameOver()) {
-		        gameOver = true;
-		        timer.stop();
-		    }
-		    else if (ui.isWin()) {
-		    	timer.stop();
-		    }
-		    repaint();
-			}
-		});
-		timer.start();
-
+		
 	}
+	
+	
 
+		private void startTimer() {
+			timer = new Timer(50, e -> {
+				if (!gameOver) { // Only update if game is not over
+//					for (Zombie zombie : zombies) {
+//						zombie.update(map);
+//					}
+//					
+////					checkCollisions(); // Check for collisions
+//					repaint();
+				
+			    for (Zombie zombie : zombies) {
+			        zombie.update(map);
+			    }
+			    
+			    checkCollisions();
+			    
+			    if (ui.isGameOver()) {
+			        gameOver = true;
+			        timer.stop();
+			    }
+			    else if (ui.isWin()) {
+			    	timer.stop();
+			    }
+			    repaint();
+				}
+			});
+			timer.start();
+
+		}
+		
+		
+	
+	
 	/**
 	 * Reset all movements to starting point
 	 */
@@ -202,8 +205,9 @@ public class DrawingComponent extends JPanel {
 			        ui.updateLives(player.getLives());
 
 			        if (player.getLives() <= 0) {
-			            gameOver = true;
+//			            gameOver = true;
 			            timer.stop();
+			            app.showGameOver();
 			        }
 			    }
 			    break;
@@ -253,12 +257,12 @@ public class DrawingComponent extends JPanel {
 	/**
 	 * Game restart code
 	 */
-	private void restartGame() {
+	void restartGame() {
 		timer.stop();
 		initializeGame();
 		timer.start();
-		requestFocusInWindow(); // Return focus to the panel for keyboard input
-		repaint();
+//		requestFocusInWindow(); // Return focus to the panel for keyboard input
+//		repaint();
 	}
 
 	/**
@@ -268,6 +272,7 @@ public class DrawingComponent extends JPanel {
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
+		if (map == null) return;
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		map.draw(g2);
@@ -316,6 +321,21 @@ public class DrawingComponent extends JPanel {
 			g2.drawString(gameOverText, (getWidth() - textWidth) / 2, getHeight() / 2);
 		}
 
+	}
+	
+	public void loadLevel(String levelFile) {
+
+	    timer.stop();
+
+	    this.currentLevel = levelFile;
+	    this.map = new Map(levelFile);
+
+	    setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+	    revalidate();
+
+	    initializeGame();
+
+	    timer.start();
 	}
 
 	// TODO refactor player movement code!
