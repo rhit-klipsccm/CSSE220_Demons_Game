@@ -7,7 +7,7 @@ import java.awt.*;
 public class MainMenuPanel extends JPanel{
 	public MainMenuPanel(MyApp app) {
 		setPreferredSize(new Dimension(1000, 700));
-		setBackground(Color.BLACK);
+		setBackground(new Color(96, 2, 140));
 		setLayout(new GridBagLayout());
 		
 		JButton level1 = new JButton("Start Level 1");
@@ -22,5 +22,15 @@ public class MainMenuPanel extends JPanel{
 		
 		add(level1);
 		add(level2);
+	}
+	
+	@Override
+	protected void paintComponent(Graphics g) {
+	    super.paintComponent(g);
+
+	    Graphics2D g2 = (Graphics2D) g;
+	    g2.setColor(Color.white);
+	    g2.setFont(new Font("Arial", Font.BOLD, 18));
+	    g2.drawString("WASD to move \n Two ways to win: Collect all the items, or make it to the green tile!", 150, 680);
 	}
 }

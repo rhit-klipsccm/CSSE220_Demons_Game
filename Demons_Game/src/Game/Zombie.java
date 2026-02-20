@@ -33,7 +33,7 @@ public class Zombie implements Sprites {
 		triedLoad = true;
 		try {
 			// tennis.png must be in the SAME package as Ball.java
-			sprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/ZombiePNGS/Idle (1).png"));
+			sprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/ZombiePNGS/EvilTHING.png"));
 		} catch (IOException | IllegalArgumentException ex) {
 			sprite = null;
 		}

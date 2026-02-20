@@ -22,6 +22,15 @@ public class Player implements Collidable, Sprites {
 	private int health;
 	private long lastHitTime = 0;
 	private static final long HIT_COOLDOWN = 1000;
+	
+	private static BufferedImage idleSprite;
+	private static BufferedImage moveRightSprite;
+	private static BufferedImage moveLeftSprite;
+	private static BufferedImage dustSprite;
+
+	private BufferedImage currentSprite;
+
+	private boolean moving = false;
 
 	public Player(int x, int y, int width, int height) {
 		this.x = x;
@@ -33,30 +42,32 @@ public class Player implements Collidable, Sprites {
 	}
 
 	private static void loadSpriteOnce() {
-		if (triedLoad)
-			return;
-		triedLoad = true;
-		try {
-			// tennis.png must be in the SAME package as Ball.java
-			sprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/BoyPNGS/Idle (1).png"));
-		} catch (IOException | IllegalArgumentException ex) {
-			sprite = null;
-		}
+	    if (triedLoad) return;
+	    triedLoad = true;
 
+	    try {
+	        idleSprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/BoyPNGS/CharacterStanding.png"));
+	        moveRightSprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/BoyPNGS/CharacterMovingRight.png"));
+	        moveLeftSprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/BoyPNGS/CharacterMovingLeft.png"));
+	        dustSprite = ImageIO.read(Player.class.getResource("/Game/CharacterSprites/Dust.png"));
+	    } catch (IOException | IllegalArgumentException e) {
+	        return;
+	    }
 	}
 
 	public void draw(Graphics2D g2) {
-		
+	    if (currentSprite == null) {
+	        currentSprite = idleSprite;
+	    }
 
-		if (sprite != null) {
-			// sprite replaces the circle
-			g2.drawImage(sprite, x, y, width, height, null);
-//			System.out.println("hey");
-		} else {
-			// fallback if sprite failed to load
-			g2.setColor(Color.RED);
-			g2.fillOval(x, y, width, height);
-		}
+	    g2.drawImage(currentSprite, x, y, width, height, null);
+
+	    // Draw dust when moving
+	    if (moving && dustSprite != null) {
+	        int dustX = x - width / 4;
+	        int dustY = y + height - height / 4;
+	        g2.drawImage(dustSprite, dustX, dustY, width / 2, height / 2, null);
+	    }
 	}
 
 	
@@ -111,14 +122,33 @@ public class Player implements Collidable, Sprites {
 	}
 	
 	
-    public void move(int dx, int dy, Map map) {
-        Rectangle next = new Rectangle(x + dx, y + dy, width, height);
-        if (map.canMove(next)) {
-            x += dx;
-            y += dy;
-        }
-    }
+	public void move(int dx, int dy, Map map) {
+	    Rectangle next = new Rectangle(x + dx, y + dy, width, height);
 
+	    if (map.canMove(next)) {
+	        x += dx;
+	        y += dy;
+
+	        moving = true;
+
+	        if (dx > 0) {
+	            currentSprite = moveRightSprite;
+	        } 
+	        else if (dx < 0) {
+	            currentSprite = moveLeftSprite;
+	        }
+	    } 
+	    else {
+	        moving = false;
+	    }
+	}
+	
+	public void setIdle() {
+	    if (!moving) {
+	        currentSprite = idleSprite;
+	    }
+	    moving = false; 
+	}
     
     
     public int getLives() {

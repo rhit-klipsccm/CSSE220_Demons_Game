@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -15,7 +16,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+
+
 
 public class DrawingComponent extends JPanel {
 	public static final int WIDTH = 1000;
@@ -70,7 +74,13 @@ public class DrawingComponent extends JPanel {
 
 	    if (levelFileName != null) {
 	        map = new Map(levelFileName);
-	        setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+//	        setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+	        setPreferredSize(new Dimension(
+	        	    map.getCols() * Block.SIZE,
+	        	    map.getRows() * Block.SIZE
+	        	));
+	        
+	        
 	    }
 
 //	    initializeGame();
@@ -91,19 +101,19 @@ public class DrawingComponent extends JPanel {
 				if (!gameOver) {
 					boolean moved = false;
 					if (e.getKeyCode() == KeyEvent.VK_W) {
-			            player.move(0, -10, map);
+			            player.move(0, -step, map);
 			            moved = true;
 			        }
 			        if (e.getKeyCode() == KeyEvent.VK_S) {
-			            player.move(0, 10, map);
+			            player.move(0, step, map);
 			            moved = true;
 			        }
 			        if (e.getKeyCode() == KeyEvent.VK_A) {
-			            player.move(-10, 0, map);
+			            player.move(-step, 0, map);
 			            moved = true;
 			        }
 			        if (e.getKeyCode() == KeyEvent.VK_D) {
-			            player.move(10, 0, map);
+			            player.move(step, 0, map);
 			            moved = true;
 			        }
 
@@ -151,8 +161,10 @@ public class DrawingComponent extends JPanel {
 			        timer.stop();
 			    }
 			    else if (ui.isWin()) {
+			    	
 			    	timer.stop();
 			    }
+			    player.setIdle();
 			    repaint();
 				}
 			});
@@ -329,6 +341,7 @@ public class DrawingComponent extends JPanel {
 
 	    this.currentLevel = levelFile;
 	    this.map = new Map(levelFile);
+	    
 
 	    setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
 	    revalidate();

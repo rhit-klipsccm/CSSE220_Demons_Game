@@ -35,13 +35,17 @@ public class MyApp {
 	}
 	
 	public void showMenu() {
-		cardLayout.show(container, MENU);
+	    cardLayout.show(container, MENU);
 	}
 	
 	public void showGame(String levelFile) {
 	    this.currentLevel = levelFile;   // remember level
 	    game.loadLevel(levelFile);
 	    cardLayout.show(container, GAME);
+	    
+	    container.revalidate();
+	    container.doLayout();
+	    
 	    frame.pack();
 	    frame.setLocationRelativeTo(null);
 	    SwingUtilities.invokeLater(() -> game.requestFocusInWindow());
