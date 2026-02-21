@@ -19,8 +19,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-
-
 public class DrawingComponent extends JPanel {
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 700;
@@ -43,8 +41,7 @@ public class DrawingComponent extends JPanel {
 	private int score = 0;
 	private int totalStars = 0;
 	private MyApp app;
-	
-	
+
 	private Rectangle restartButton;
 	// more "dynamically" assign the player's and zombie's size now, changeable with
 	// block fields now, should scale better?
@@ -63,37 +60,37 @@ public class DrawingComponent extends JPanel {
 //			);
 //	
 
+	/**
+	 * Initializes game panel with specific level file
+	 * 
+	 * @param app
+	 * @param levelFileName
+	 */
 	public DrawingComponent(MyApp app, String levelFileName) {
 
-	    this.app = app;
-	    this.currentLevel = levelFileName;
+		this.app = app;
+		this.currentLevel = levelFileName;
 
-	    setBackground(Color.CYAN);
-	    setOpaque(true);
-	    setFocusable(true);
+		setBackground(Color.CYAN);
+		setOpaque(true);
+		setFocusable(true);
 
-	    if (levelFileName != null) {
-	        map = new Map(levelFileName);
+		if (levelFileName != null) {
+			map = new Map(levelFileName);
 //	        setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
-	        setPreferredSize(new Dimension(
-	        	    map.getCols() * Block.SIZE,
-	        	    map.getRows() * Block.SIZE
-	        	));
-	        
-	        
-	    }
+			setPreferredSize(new Dimension(map.getCols() * Block.SIZE, map.getRows() * Block.SIZE));
+
+		}
 
 //	    initializeGame();
-	    setupControls();
-	    startTimer();
+		setupControls();
+		startTimer();
 	}
 
-		
-		
-
-		
-	
-	
+	/**
+	 * Sets up player movement using WASD keys and click/mouselisteners for buttons,
+	 * like restart and level choosing.
+	 */
 	private void setupControls() {
 		addKeyListener(new KeyAdapter() {
 			@Override
@@ -101,30 +98,30 @@ public class DrawingComponent extends JPanel {
 				if (!gameOver) {
 					boolean moved = false;
 					if (e.getKeyCode() == KeyEvent.VK_W) {
-			            player.move(0, -step, map);
-			            moved = true;
-			        }
-			        if (e.getKeyCode() == KeyEvent.VK_S) {
-			            player.move(0, step, map);
-			            moved = true;
-			        }
-			        if (e.getKeyCode() == KeyEvent.VK_A) {
-			            player.move(-step, 0, map);
-			            moved = true;
-			        }
-			        if (e.getKeyCode() == KeyEvent.VK_D) {
-			            player.move(step, 0, map);
-			            moved = true;
-			        }
+						player.move(0, -step, map);
+						moved = true;
+					}
+					if (e.getKeyCode() == KeyEvent.VK_S) {
+						player.move(0, step, map);
+						moved = true;
+					}
+					if (e.getKeyCode() == KeyEvent.VK_A) {
+						player.move(-step, 0, map);
+						moved = true;
+					}
+					if (e.getKeyCode() == KeyEvent.VK_D) {
+						player.move(step, 0, map);
+						moved = true;
+					}
 
-			        if (moved) {
-			            checkCollisions();
-			            repaint();
-			        }
+					if (moved) {
+						checkCollisions();
+						repaint();
+					}
 				}
 			}
 		});
-		
+
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -135,46 +132,44 @@ public class DrawingComponent extends JPanel {
 				}
 			}
 		});
-		
-	}
-	
-	
 
-		private void startTimer() {
-			timer = new Timer(50, e -> {
-				if (!gameOver) { // Only update if game is not over
+	}
+
+	/**
+	 * Main game loop logic that updates enemies using timer, checks for 
+	 * collisions and refreshes the screen at the given tickrate
+	 */
+	private void startTimer() {
+		timer = new Timer(50, e -> {
+			if (!gameOver) { // Only update if game is not over
 //					for (Zombie zombie : zombies) {
 //						zombie.update(map);
 //					}
 //					
 ////					checkCollisions(); // Check for collisions
 //					repaint();
-				
-			    for (Zombie zombie : zombies) {
-			        zombie.update(map);
-			    }
-			    
-			    checkCollisions();
-			    
-			    if (ui.isGameOver()) {
-			        gameOver = true;
-			        timer.stop();
-			    }
-			    else if (ui.isWin()) {
-			    	
-			    	timer.stop();
-			    }
-			    player.setIdle();
-			    repaint();
-				}
-			});
-			timer.start();
 
-		}
-		
-		
-	
-	
+				for (Zombie zombie : zombies) {
+					zombie.update(map);
+				}
+
+				checkCollisions();
+
+				if (ui.isGameOver()) {
+					gameOver = true;
+					timer.stop();
+				} else if (ui.isWin()) {
+
+					timer.stop();
+				}
+				player.setIdle();
+				repaint();
+			}
+		});
+		timer.start();
+
+	}
+
 	/**
 	 * Reset all movements to starting point
 	 */
@@ -185,7 +180,7 @@ public class DrawingComponent extends JPanel {
 		for (int i = 0; i < map.getZombieSpawnCount(); i++) {
 			zombies.add(new Zombie(map.getZombieSpawnX(i), map.getZombieSpawnY(i), Block.SIZE, Block.SIZE));
 		}
-		
+
 		items.clear();
 		for (int i = 0; i < map.getItemSpawnCount(); i++) {
 			items.add(new Item(map.getItemSpawnX(i), map.getItemSpawnY(i), Block.SIZE, Block.SIZE));
@@ -195,10 +190,10 @@ public class DrawingComponent extends JPanel {
 		totalStars = items.size();
 		score = 0;
 		gameOver = false;
-		
+
 		ui = new UI(playerLives, score, totalStars);
 		ui.updateLives(playerLives);
-		ui.updateScore(score); 
+		ui.updateScore(score);
 	}
 
 	/**
@@ -209,45 +204,41 @@ public class DrawingComponent extends JPanel {
 
 		for (Zombie zombie : zombies) {
 			Rectangle zombieBounds = zombie.getBounds();
-			
 
 			if (playerBounds.intersects(zombieBounds)) {
-			    if (player.canTakeDamage()) {
-			        player.loseLife();
-			        ui.updateLives(player.getLives());
+				if (player.canTakeDamage()) {
+					player.loseLife();
+					ui.updateLives(player.getLives());
 
-			        if (player.getLives() <= 0) {
+					if (player.getLives() <= 0) {
 //			            gameOver = true;
-			            timer.stop();
-			            app.showGameOver();
-			        }
-			    }
-			    break;
+						timer.stop();
+						app.showGameOver();
+					}
+				}
+				break;
 			}
 
-			
 		}
 		int centerX = playerBounds.x + playerBounds.width / 2;
 		int centerY = playerBounds.y + playerBounds.height / 2;
 		Rectangle point = new Rectangle(centerX, centerY, 1, 1);
 
 		for (Item item : items) {
-		    if (point.intersects(item.getBounds()) && !item.isCollected()) {
-		        item.collect();
-		        score++;
-		        ui.updateScore(score);
-		        break;
-		    }
+			if (point.intersects(item.getBounds()) && !item.isCollected()) {
+				item.collect();
+				score++;
+				ui.updateScore(score);
+				break;
+			}
 		}
-		
-		
-		
+
 		if (map.isExit(player.getBounds())) {
 //			if reach the total score, then win
-		    ui.updateScore(totalStars);
-		    timer.stop();
+			ui.updateScore(totalStars);
+			timer.stop();
 		}
-		}
+	}
 
 	/**
 	 * subtracts health from player whenever called
@@ -280,11 +271,13 @@ public class DrawingComponent extends JPanel {
 	/**
 	 * paint component method that is responsible for drawing what the user sees
 	 * draws game ui, game over screen and restart button
+	 * 
 	 * @param g
 	 */
 	@Override
 	protected void paintComponent(Graphics g) {
-		if (map == null) return;
+		if (map == null)
+			return;
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		map.draw(g2);
@@ -324,8 +317,7 @@ public class DrawingComponent extends JPanel {
 			String buttonText = "RESTART";
 			int btnTextWidth = g2.getFontMetrics().stringWidth(buttonText);
 			g2.drawString(buttonText, buttonX + (buttonWidth - btnTextWidth) / 2, buttonY + buttonHeight / 2 + 8);
-			} 
-		else if (ui.isWin()) {
+		} else if (ui.isWin()) {
 			g2.setColor(Color.RED);
 			g2.setFont(new Font("Arial", Font.BOLD, 48));
 			String gameOverText = "YOU WIN !!!";
@@ -334,21 +326,24 @@ public class DrawingComponent extends JPanel {
 		}
 
 	}
-	
+
+	/**
+	 * Loads level that is given
+	 * @param levelFile
+	 */
 	public void loadLevel(String levelFile) {
 
-	    timer.stop();
+		timer.stop();
 
-	    this.currentLevel = levelFile;
-	    this.map = new Map(levelFile);
-	    
+		this.currentLevel = levelFile;
+		this.map = new Map(levelFile);
 
-	    setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
-	    revalidate();
+		setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+		revalidate();
 
-	    initializeGame();
+		initializeGame();
 
-	    timer.start();
+		timer.start();
 	}
 
 	// TODO refactor player movement code!

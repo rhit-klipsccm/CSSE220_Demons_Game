@@ -9,21 +9,32 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
-
+/**
+ * Hostile enemy entity that moves around the map to collide with players and
+ * damage the player
+ */
 public class Zombie implements Sprites {
-	 private int x, y, width, height;
-	    private int step = 20;
-	    private Direction direction = Direction.UP;
-	    private int stepsRemaining = 0;
-	    private static BufferedImage sprite;
-	    private static boolean triedLoad;
-	    private static final Random random = new Random();
-	    
+	private int x, y, width, height;
+	private int step = 20;
+	private Direction direction = Direction.UP;
+	private int stepsRemaining = 0;
+	private static BufferedImage sprite;
+	private static boolean triedLoad;
+	private static final Random random = new Random();
+
+	/**
+	 * Creates zombie at the given coordinates on the map
+	 * 
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
 	public Zombie(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
-		this.width=width;
-		this.height=height;
+		this.width = width;
+		this.height = height;
 		loadSpriteOnce();
 	}
 
@@ -41,7 +52,6 @@ public class Zombie implements Sprites {
 	}
 
 	public void draw(Graphics2D g2) {
-		
 
 		if (sprite != null) {
 			// sprite replaces the circle
@@ -53,9 +63,6 @@ public class Zombie implements Sprites {
 			g2.fillOval(x, y, width, height);
 		}
 	}
-	
-		
-	
 
 	public int getX() {
 		return x;
@@ -73,84 +80,38 @@ public class Zombie implements Sprites {
 		this.y = y;
 	}
 
-//	@Override
-//	public void update(int worldWidth, int worldHeight) {
-//		// move first
-//		x += dx;
-//		y += dy;
-//
-//		// Left wall
-//		if (x < 0) {
-//			x = 0; // clamp
-//			dx = -dx;
-//		}
-//		// Right wall
-//		else if (x + width > worldWidth) {
-//			x = worldWidth - width;
-//			dx = -dx;
-//		}
-//
-//		// Top wall
-//		if (y < 0) {
-//			y = 0;
-//			dy = -dy;
-//		}
-//		// Bottom wall
-//		else if (y + height > worldHeight) {
-//			y = worldHeight - height;
-//			dy = -dy;
-//		}
-//	}
-//	
-//	public void moveZombie(Direction direction) {
-//		this.setX(this.getX() + direction.dx*step);
-//		this.setY(this.getY() + direction.dy*step);
-//	}
-//	
-//	private Direction currentZombieDirection = Direction.UP;
-//	private int stepsRemaining = 0;
-//	public void zombieRandomMovement() {
-//		Random random = new Random();
-//		if (stepsRemaining <= 0) {
-//			currentZombieDirection = Direction.values()[random.nextInt(4)];
-//			stepsRemaining = random.nextInt(20) + random.nextInt(10);
-//		}
-//		
-//		moveZombie(currentZombieDirection);
-//		stepsRemaining--;
-//	}
-	
-	 public void update(Map map) {
-	        if (stepsRemaining <= 0) {
-	            direction = Direction.values()[random.nextInt(4)];
-	            stepsRemaining = random.nextInt(30) + 10;
-	        }
+	/**
+	 * Updates zombie's position based on the random movement generator which
+	 * assigns a direction.
+	 * 
+	 * @param map
+	 */
+	public void update(Map map) {
+		if (stepsRemaining <= 0) {
+			direction = Direction.values()[random.nextInt(4)];
+			stepsRemaining = random.nextInt(30) + 10;
+		}
 
-	        Rectangle next = new Rectangle(
-	            x + direction.dx * step,
-	            y + direction.dy * step,
-	            width,
-	            height
-	        );
+		Rectangle next = new Rectangle(x + direction.dx * step, y + direction.dy * step, width, height);
 
-	        if (map.canMove(next)) {
-	            x = next.x;
-	            y = next.y;
-	            stepsRemaining--;
-	        } else {
-	            direction = direction.opposite();
-	            stepsRemaining = 0;
-	        }
-	    }
-	
+		if (map.canMove(next)) {
+			x = next.x;
+			y = next.y;
+			stepsRemaining--;
+		} else {
+			direction = direction.opposite();
+			stepsRemaining = 0;
+		}
+	}
+
 	public Rectangle getBounds() {
-	    return new Rectangle(this.getX(), this.getY(), width, height);
+		return new Rectangle(this.getX(), this.getY(), width, height);
 	}
 
 	@Override
 	public void setAction(String actionName) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
+
 }

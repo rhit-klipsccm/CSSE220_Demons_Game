@@ -9,7 +9,9 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Block {
-
+	/**
+	 * Fixed dimension of each tile/block
+	 */
     public static final int SIZE = 40;
 
     private int type;
@@ -20,7 +22,12 @@ public class Block {
 
     private static boolean loaded = false;
     private static final Random random = new Random();
-
+    
+    /**
+     * Constructs a new Block
+     * Loads sprite if tiles have not yet been initialized
+     * @param type
+     */
     public Block(int type) {
         if (!loaded) {
             loadTileSprites();
@@ -44,10 +51,20 @@ public class Block {
         }
     }
 
+    /**
+     * Determines whether you can pass through a tile (floor) or not (wall)
+     * @return
+     */
     public boolean isWalkable() {
         return type != 0;
     }
 
+    /**
+     * Displays the tile at specified coordinates
+     * @param g2
+     * @param x
+     * @param y
+     */
     public void draw(Graphics2D g2, int x, int y) {
         switch (type) {
             case 0 -> {

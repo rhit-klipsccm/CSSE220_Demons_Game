@@ -4,7 +4,15 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.*;
 
+/**
+ * Starting screen of the game, includes level selector, displaying
+ * gameplay instructions
+ */
 public class MainMenuPanel extends JPanel{
+	/**
+	 * Creates main menu with level selection buttons
+	 * @param app
+	 */
 	public MainMenuPanel(MyApp app) {
 		setPreferredSize(new Dimension(1000, 700));
 		setBackground(new Color(96, 2, 140));
@@ -24,6 +32,9 @@ public class MainMenuPanel extends JPanel{
 		add(level2);
 	}
 	
+	/**
+	 * Renders background elements and instructions text
+	 */
 	@Override
 	protected void paintComponent(Graphics g) {
 	    super.paintComponent(g);

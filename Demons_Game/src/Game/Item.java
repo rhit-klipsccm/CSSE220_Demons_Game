@@ -17,6 +17,13 @@ public class Item {
 	private static boolean triedLoad = false;
 	private boolean collected = false;
 	
+	/**
+	 * Creates a collectible item at a given coordinate location
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 */
 	public Item(int x, int y, int width, int height) {
 		this.x = x;
 		this.y = y;
@@ -37,6 +44,10 @@ public class Item {
 
 	}
 
+	/**
+	 * Returns the boundaries/hitbox of the item
+	 * @return
+	 */
 	public Rectangle getBounds() {
 		// TODO Auto-generated method stub
 		return new Rectangle(this.getX(), this.getY(), width, height);
@@ -70,6 +81,10 @@ public class Item {
 	    return collected;
 	}
 
+	/**
+	 * Removes item from the screen while giving it to the player/marking it
+	 * as collected
+	 */
 	public void collect() {
 	    collected = true;
 	}
