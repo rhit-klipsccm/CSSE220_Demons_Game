@@ -77,12 +77,12 @@ public class Player implements Collidable, Sprites {
 
 		g2.drawImage(currentSprite, x, y, width, height, null);
 
-		// Draw dust when moving
-		if (moving && dustSprite != null) {
-			int dustX = x - width / 4;
-			int dustY = y + height - height / 4;
-			g2.drawImage(dustSprite, dustX, dustY, width / 2, height / 2, null);
-		}
+//		// Draw dust when moving
+//		if (moving && dustSprite != null) {
+//			int dustX = x - width / 4;
+//			int dustY = y + height - height / 4;
+//			g2.drawImage(dustSprite, dustX, dustY, width / 2, height / 2, null);
+//		}
 	}
 
 	public int getX() {
@@ -186,10 +186,6 @@ public class Player implements Collidable, Sprites {
 		lastHitTime = System.currentTimeMillis();
 	}
 
-	@Override
-	public void setAction(String actionName) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 }

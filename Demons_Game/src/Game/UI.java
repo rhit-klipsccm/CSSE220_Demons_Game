@@ -115,21 +115,6 @@ public class UI {
 		// Score
 		g2.drawString("Score: " + score + " / " + totalStars, 20, 60);
 
-		// Exit(if need?)
-//        g2.drawString("Exit", 900, 30);
 
-//        //Game Over
-//        if (gameOver) {
-//            g2.setFont(new Font("Arial", Font.BOLD, 60));
-//            g2.setColor(Color.RED);
-//            g2.drawString("GAME OVER", 350, 350);
-//        }
-//  
-//        //Win
-//        if (win) {
-//            g2.setFont(new Font("Arial", Font.BOLD, 60));
-//            g2.setColor(Color.GREEN);
-//            g2.drawString("YOU WIN!", 380, 350);
-//        }
 	}
 }

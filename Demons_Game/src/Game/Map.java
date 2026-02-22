@@ -25,7 +25,7 @@ public class Map {
 
 	/**
 	 * Parses the level text file accordingly: 0 (wall), 1 (exit), 2 (path), 3
-	 * (zombie), 4 (player);
+	 * (zombie), 4 (player), 5 (item collectable);
 	 * 
 	 * @param filename
 	 */
@@ -111,7 +111,6 @@ public class Map {
 	 */
 	private int[][] mapLoader(String filename) {
 		ArrayList<int[]> mapArray = new ArrayList<int[]>();
-//    	File mapFile = new File(filename);
 		Scanner scanner = new Scanner(getClass().getResourceAsStream(filename));
 
 		while (scanner.hasNextLine()) {
@@ -194,10 +193,11 @@ public class Map {
 	}
 
 	private boolean isExit(int row, int col) {
-		return blocks[row][col].getType() == 1;
+	    if (row < 0 || col < 0 || row >= rows || col >= cols) {
+	        return false;
+	    }
+	    return blocks[row][col].getType() == 1;
 	}
 
-//    if (map.isExit(player.getBounds())) {
-//        ui.setScore(ui.getTotalStars());
-//    }
+
 }

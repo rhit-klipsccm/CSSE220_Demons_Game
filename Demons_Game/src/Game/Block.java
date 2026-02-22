@@ -8,6 +8,10 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Author: Hans (mostly)
+ */
+
 public class Block {
 	/**
 	 * Fixed dimension of each tile/block
@@ -35,7 +39,11 @@ public class Block {
         }
         this.type = type;
     }
-
+    
+    
+    /**
+     * Switched blocks from solid colors to drawn sprites -- Connor
+     */
     private static void loadTileSprites() {
         try {
             wallBrick = ImageIO.read(Block.class.getResource("/Game/TileSprites/WallBrickTile.png"));

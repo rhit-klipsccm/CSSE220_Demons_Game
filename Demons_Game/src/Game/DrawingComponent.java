@@ -34,7 +34,7 @@ public class DrawingComponent extends JPanel {
 	private Map map;
 	private ArrayList<Zombie> zombies = new ArrayList<>();
 	private ArrayList<Item> items = new ArrayList<>();
-	private Player player;
+	private Player player = new Player(0, 0, 0, 0);
 	private UI ui;
 	private int playerLives = 3;
 	private boolean gameOver = false;
@@ -43,29 +43,14 @@ public class DrawingComponent extends JPanel {
 	private MyApp app;
 
 	private Rectangle restartButton;
-	// more "dynamically" assign the player's and zombie's size now, changeable with
-	// block fields now, should scale better?
-//		private Player player = new Player(
-//			    map.getPlayerStartX(),
-//			    map.getPlayerStartY(),
-//			    Block.SIZE,
-//			    Block.SIZE
-//			);
-
-//		private Zombie zombie = new Zombie(
-//			    Block.SIZE * (map.getCols() - 2),
-//			    Block.SIZE * 1,
-//			    Block.SIZE,
-//			    Block.SIZE
-//			);
-//	
-
+	
 	/**
 	 * Initializes game panel with specific level file
 	 * 
 	 * @param app
 	 * @param levelFileName
 	 */
+	
 	public DrawingComponent(MyApp app, String levelFileName) {
 
 		this.app = app;
@@ -77,12 +62,11 @@ public class DrawingComponent extends JPanel {
 
 		if (levelFileName != null) {
 			map = new Map(levelFileName);
-//	        setPreferredSize(new Dimension(map.getPixelWidth(), map.getPixelHeight()));
+
 			setPreferredSize(new Dimension(map.getCols() * Block.SIZE, map.getRows() * Block.SIZE));
 
 		}
-
-//	    initializeGame();
+		
 		setupControls();
 		startTimer();
 	}
@@ -141,14 +125,8 @@ public class DrawingComponent extends JPanel {
 	 */
 	private void startTimer() {
 		timer = new Timer(50, e -> {
-			if (!gameOver) { // Only update if game is not over
-//					for (Zombie zombie : zombies) {
-//						zombie.update(map);
-//					}
-//					
-////					checkCollisions(); // Check for collisions
-//					repaint();
-
+			if (!gameOver) { // Only update if game is not over				
+				
 				for (Zombie zombie : zombies) {
 					zombie.update(map);
 				}
@@ -211,7 +189,7 @@ public class DrawingComponent extends JPanel {
 					ui.updateLives(player.getLives());
 
 					if (player.getLives() <= 0) {
-//			            gameOver = true;
+
 						timer.stop();
 						app.showGameOver();
 					}
@@ -241,31 +219,13 @@ public class DrawingComponent extends JPanel {
 	}
 
 	/**
-	 * subtracts health from player whenever called
-	 */
-	private void handlePlayerHit() {
-		playerLives--;
-		ui.setLives(playerLives);
-
-		if (playerLives <= 0) {
-			gameOver = true;
-			timer.stop(); // Stop the game
-		} else {
-			// Respawn player at starting position
-			player.setX(map.getPlayerStartX());
-			player.setY(map.getPlayerStartY());
-		}
-	}
-
-	/**
 	 * Game restart code
 	 */
 	void restartGame() {
 		timer.stop();
 		initializeGame();
 		timer.start();
-//		requestFocusInWindow(); // Return focus to the panel for keyboard input
-//		repaint();
+
 	}
 
 	/**
@@ -346,76 +306,5 @@ public class DrawingComponent extends JPanel {
 		timer.start();
 	}
 
-	// TODO refactor player movement code!
-//	public void moveUp() {
-//		player.setY(player.getY()-step);
-//		repaint();
-//	}
-//	
-//	public void moveDown() {
-//		player.setY(player.getY()+step);
-//		repaint();
-//	}
-//	
-//	public void moveLeft() {
-//		player.setX(player.getX()-step);
-//		repaint();
-//	}
-//
-//	public void moveRight() {
-//		player.setX(player.getX()+step);
-//		repaint();
-//	}
-//
-//	public void reset() {
-//		x = start_x;
-//		repaint();
-//	}
-
-	// TODO: refactor zombie random movement!
-//	public void zombieMoveUp() {
-//		zombie.setY(zombie.getY()-step);
-//		repaint();
-//	}
-//	
-//	public void zombieMoveDown() {
-//		zombie.setY(zombie.getY()+step);
-//		repaint();
-//	}
-//	
-//	public void zombieMoveLeft() {
-//		zombie.setX(zombie.getX()-step);
-//		repaint();
-//	}
-//
-//	public void zombieMoveRight() {
-//		zombie.setX(zombie.getX()+step);
-//		repaint();
-//	}
-//
-//	public void zombieReset() {
-//		x = start_x;
-//		repaint();
-//	}
-//	
-//	public void zombieRandomMove() {
-//		ArrayList<String> directions = new ArrayList<String>();
-//		directions.add("UP");
-//		directions.add("DOWN");
-//		directions.add("LEFT");
-//		directions.add("RIGHT");
-//		
-//		Random random = new Random();
-//		int randomIndex = random.nextInt(directions.size());
-//		
-//		String randomDirection = directions.get(randomIndex);
-//		
-//		if (randomDirection == "UP") zombieMoveUp();
-//		else if (randomDirection == "DOWN") zombieMoveDown();
-//		else if (randomDirection == "LEFT") zombieMoveLeft();
-//		else if (randomDirection == "RIGHT") zombieMoveRight();
-//		
-//
-//	}
 
 }

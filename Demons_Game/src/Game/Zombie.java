@@ -108,10 +108,6 @@ public class Zombie implements Sprites {
 		return new Rectangle(this.getX(), this.getY(), width, height);
 	}
 
-	@Override
-	public void setAction(String actionName) {
-		// TODO Auto-generated method stub
 
-	}
 
 }
