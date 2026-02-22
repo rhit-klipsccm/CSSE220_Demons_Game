@@ -7,6 +7,7 @@ import javax.swing.*;
 /**
  * Main controller of the application Manages the CardLayout screens.
  */
+
 public class MyApp {
 	private JFrame frame;
 	private JPanel container;
