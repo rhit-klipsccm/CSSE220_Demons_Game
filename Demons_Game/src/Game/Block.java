@@ -25,7 +25,7 @@ public class Block {
     
     /**
      * Constructs a new Block
-     * Loads sprite if tiles have not yet been initialized
+     * Loads sprite if tiles have not yet been initialized.
      * @param type
      */
     public Block(int type) {
